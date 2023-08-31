@@ -7,7 +7,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 @Service
-public class HashService {
+class HashService {
     private final MessageDigest md;
 
     HashService() {
