@@ -6,19 +6,11 @@ import java.math.BigInteger;
 import java.util.LinkedList;
 
 @Service
-class BaseXEncodeService {
-    private final char[] codec;
-    private final BigInteger base;
+class Base62EncodeService {
+    static final String CODEC = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-    BaseXEncodeService() {
-        this.codec = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".toCharArray();
-        this.base = new BigInteger(String.valueOf(this.codec.length));
-    }
-
-    BaseXEncodeService(String codec) {
-        this.codec = codec.toCharArray();
-        this.base = new BigInteger(String.valueOf(this.codec.length));
-    }
+    private final char[] codec = CODEC.toCharArray();
+    private final BigInteger base = new BigInteger(String.valueOf(this.codec.length));
 
     String encode(byte[] bytes) {
         if (bytes.length == 0) {
