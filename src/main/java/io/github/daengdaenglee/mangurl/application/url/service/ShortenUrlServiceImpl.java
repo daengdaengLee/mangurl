@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -15,12 +16,15 @@ import java.util.List;
 public class ShortenUrlServiceImpl implements ShortenUrlService {
     private final MangleService mangleService;
     private final UrlRepository urlRepository;
-    // @TODO outbound port 에서 조회하도록 수정
-    private final List<String> salts = List.of("", "1", "2");
 
     @Override
     public String shortenUrl(String originalUrl) {
-        for (var salt : this.salts) {
+        // 모든 시도가 실패한 originalUrl 을 다시 요청할 때 계속 실패하는 경우를 방지하기 위해 salt 값을 실행할 때마다 다르게 사용
+        // @TODO 기본 2번 재시도, 총 3번 시도하도록 작성
+        //       재시도 횟수 외부 설정으로 분리
+        var salts = List.of("", UUID.randomUUID().toString(), UUID.randomUUID().toString());
+
+        for (var salt : salts) {
             var shortUrlCodeResult = this.urlRepository.findShortUrlCodeByOriginalUrl(originalUrl);
             if (shortUrlCodeResult.isPresent()) {
                 return shortUrlCodeResult.get();
