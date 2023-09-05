@@ -1,4 +1,4 @@
-package io.github.daengdaenglee.mangurl.outboundadapter.mangle.repository;
+package io.github.daengdaenglee.mangurl.outboundadapter.url.repository;
 
 import io.github.daengdaenglee.mangurl.application.url.outboundport.DuplicateShortUrlCodeException;
 import org.assertj.core.api.Assertions;
