@@ -24,8 +24,6 @@ class HashService {
     }
 
     byte[] hash(String message, String salt) {
-        var saltedMessage = message + salt;
-        this.md.update(saltedMessage.getBytes(StandardCharsets.UTF_8));
-        return md.digest();
+        return this.hash(message + salt);
     }
 }
