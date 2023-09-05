@@ -1,4 +1,4 @@
-package io.github.daengdaenglee.mangurl.application.mangle.service;
+package io.github.daengdaenglee.mangurl.application.url.service;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

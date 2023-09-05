@@ -1,4 +1,4 @@
-package io.github.daengdaenglee.mangurl.application.mangle.service;
+package io.github.daengdaenglee.mangurl.application.url.service;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
