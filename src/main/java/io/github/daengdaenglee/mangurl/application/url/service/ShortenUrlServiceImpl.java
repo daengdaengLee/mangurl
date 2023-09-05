@@ -42,6 +42,8 @@ public class ShortenUrlServiceImpl implements ShortenUrlService {
         log.error("해시 충돌로 단축 URL 코드 생성 실패");
         // 계속해서 해시 충돌이 나는 경우 application 에서 처리가 불가능하기 때문에
         // 도메인 Exception 이 아닌 RuntimeException 으로 처리
+        // @TODO 예외의 메시지를 클라이언트에게 응답해도 안전한지 구분하기 위해 커스텀 예외로 바꾸고 RestControllerAdvice 로 처리할 필요 있음
+        //       변경 이후 테스트도 수정해야 함
         throw new RuntimeException("단축 URL 을 생성할 수 없습니다.");
     }
 }
