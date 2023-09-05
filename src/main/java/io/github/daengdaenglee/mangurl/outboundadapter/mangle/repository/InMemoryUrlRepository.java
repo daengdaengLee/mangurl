@@ -13,7 +13,7 @@ public class InMemoryUrlRepository implements UrlRepository {
     private final ConcurrentHashMap<String, String> shortUrlCodeByOriginalUrl = new ConcurrentHashMap<>();
 
     @Override
-    public Optional<String> readShortUrlCodeByOriginalUrl(String originalUrl) {
+    public Optional<String> findShortUrlCodeByOriginalUrl(String originalUrl) {
         return Optional.ofNullable(this.shortUrlCodeByOriginalUrl.get(originalUrl));
     }
 
@@ -32,7 +32,7 @@ public class InMemoryUrlRepository implements UrlRepository {
     }
 
     @Override
-    public Optional<String> readOriginalUrlByShortUrlCode(String shortUrlCode) {
+    public Optional<String> findOriginalUrlByShortUrlCode(String shortUrlCode) {
         return Optional.ofNullable(this.originalUrlByShortUrlCode.get(shortUrlCode));
     }
 }
