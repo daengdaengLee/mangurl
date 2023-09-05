@@ -1,4 +1,4 @@
-package io.github.daengdaenglee.mangurl.application.mangle.outboundport;
+package io.github.daengdaenglee.mangurl.application.url.outboundport;
 
 public class DuplicateShortUrlCodeException extends RuntimeException {
 }

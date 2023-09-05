@@ -1,7 +1,7 @@
-package io.github.daengdaenglee.mangurl.outboundadapter.mangle.repository;
+package io.github.daengdaenglee.mangurl.outboundadapter.url.repository;
 
-import io.github.daengdaenglee.mangurl.application.mangle.outboundport.DuplicateShortUrlCodeException;
-import io.github.daengdaenglee.mangurl.application.mangle.outboundport.UrlRepository;
+import io.github.daengdaenglee.mangurl.application.url.outboundport.DuplicateShortUrlCodeException;
+import io.github.daengdaenglee.mangurl.application.url.outboundport.UrlRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
