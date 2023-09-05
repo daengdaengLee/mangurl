@@ -41,12 +41,7 @@ class RestoreUrlServiceImplTest {
         var result = this.restoreUrlService.restoreUrl(this.testUrlData.shortUrlCode1);
 
         // then
-        var shortUrlCodeCaptor = ArgumentCaptor.forClass(String.class);
-        verify(this.urlRepository, times(1))
-                .findOriginalUrlByShortUrlCode(shortUrlCodeCaptor.capture());
-        var capturedShortUrlCode = shortUrlCodeCaptor.getValue();
-        assertThat(capturedShortUrlCode).isEqualTo(this.testUrlData.shortUrlCode1);
-
+        this.verifyUrlRepositoryFindOriginalUrlByShortUrlCode(this.testUrlData.shortUrlCode1);
         assertThat(result.isPresent()).isTrue();
         assertThat(result.get()).isEqualTo(this.testUrlData.originalUrl1);
     }
@@ -62,12 +57,15 @@ class RestoreUrlServiceImplTest {
         var result = this.restoreUrlService.restoreUrl(this.testUrlData.shortUrlCode1);
 
         // then
+        this.verifyUrlRepositoryFindOriginalUrlByShortUrlCode(this.testUrlData.shortUrlCode1);
+        assertThat(result.isEmpty()).isTrue();
+    }
+
+    private void verifyUrlRepositoryFindOriginalUrlByShortUrlCode(String shortUrlCode) {
         var shortUrlCodeCaptor = ArgumentCaptor.forClass(String.class);
         verify(this.urlRepository, times(1))
                 .findOriginalUrlByShortUrlCode(shortUrlCodeCaptor.capture());
         var capturedShortUrlCode = shortUrlCodeCaptor.getValue();
-        assertThat(capturedShortUrlCode).isEqualTo(this.testUrlData.shortUrlCode1);
-
-        assertThat(result.isEmpty()).isTrue();
+        assertThat(capturedShortUrlCode).isEqualTo(shortUrlCode);
     }
 }
