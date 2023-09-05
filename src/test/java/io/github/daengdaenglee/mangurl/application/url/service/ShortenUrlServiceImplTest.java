@@ -1,7 +1,10 @@
 package io.github.daengdaenglee.mangurl.application.url.service;
 
+import io.github.daengdaenglee.mangurl.TestUrlData;
+import io.github.daengdaenglee.mangurl.application.url.inboundport.ShortenUrlService;
 import io.github.daengdaenglee.mangurl.application.url.outboundport.DuplicateShortUrlCodeException;
 import io.github.daengdaenglee.mangurl.application.url.outboundport.UrlRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,26 +21,28 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ShortenUrlServiceImplTest {
-    private final String testOriginalUrl1 = "https://google.com";
-    private final String testShortUrlCode1 = "abcdefg";
-    private final String testShortUrlCode2 = "hijklmn";
-    private final String testShortUrlCode3 = "opqrstu";
-
     @Mock
     private MangleService mangleService;
     @Mock
     private UrlRepository urlRepository;
+    private ShortenUrlService shortenUrlService;
+    private TestUrlData testUrlData;
+
+    @BeforeEach
+    void beforeEach() {
+        this.shortenUrlService = new ShortenUrlServiceImpl(this.mangleService, this.urlRepository);
+        this.testUrlData = new TestUrlData();
+    }
 
     @Test
     @DisplayName("저장되어 있는 originalUrl 을 단축하려는 경우, 매핑되어 있는 shortUrlCode 를 바로 반환한다.")
     void shortenExistingOriginalUrl() {
         // given
-        var shortenUrlService = new ShortenUrlServiceImpl(this.mangleService, this.urlRepository);
         when(this.urlRepository.findShortUrlCodeByOriginalUrl(anyString()))
-                .thenReturn(Optional.of(this.testShortUrlCode1));
+                .thenReturn(Optional.of(this.testUrlData.shortUrlCode1));
 
         // when
-        var result = shortenUrlService.shortenUrl(this.testOriginalUrl1);
+        var result = this.shortenUrlService.shortenUrl(this.testUrlData.originalUrl1);
 
         // then
         {
@@ -45,27 +50,26 @@ class ShortenUrlServiceImplTest {
             verify(this.urlRepository, times(1))
                     .findShortUrlCodeByOriginalUrl(originalUrlCaptor.capture());
             var capturedOriginalUrl = originalUrlCaptor.getValue();
-            assertThat(capturedOriginalUrl).isEqualTo(this.testOriginalUrl1);
+            assertThat(capturedOriginalUrl).isEqualTo(this.testUrlData.originalUrl1);
         }
 
-        assertThat(result).isEqualTo(this.testShortUrlCode1);
+        assertThat(result).isEqualTo(this.testUrlData.shortUrlCode1);
     }
 
     @Test
     @DisplayName("재시도 도중 originalUrl 에 매핑된 shortUrlCode 를 찾은 경우, 매핑되어 있는 shortUrlCode 를 바로 반환한다.")
     void shortenExistingOriginalUrl2() {
         // given
-        var shortenUrlService = new ShortenUrlServiceImpl(this.mangleService, this.urlRepository);
         when(this.urlRepository.findShortUrlCodeByOriginalUrl(anyString()))
                 .thenReturn(Optional.empty())
-                .thenReturn(Optional.of(this.testShortUrlCode1));
+                .thenReturn(Optional.of(this.testUrlData.shortUrlCode1));
         when(this.mangleService.mangle(anyString()))
-                .thenReturn(this.testShortUrlCode2);
+                .thenReturn(this.testUrlData.shortUrlCode2);
         doThrow(new DuplicateShortUrlCodeException())
                 .when(this.urlRepository).save(anyString(), anyString());
 
         // when
-        var result = shortenUrlService.shortenUrl(this.testOriginalUrl1);
+        var result = this.shortenUrlService.shortenUrl(this.testUrlData.originalUrl1);
 
         // then
         {
@@ -73,8 +77,8 @@ class ShortenUrlServiceImplTest {
             verify(this.urlRepository, times(2))
                     .findShortUrlCodeByOriginalUrl(originalUrlCaptor.capture());
             var capturedOriginalUrls = originalUrlCaptor.getAllValues();
-            assertThat(capturedOriginalUrls.get(0)).isEqualTo(this.testOriginalUrl1);
-            assertThat(capturedOriginalUrls.get(1)).startsWith(this.testOriginalUrl1);
+            assertThat(capturedOriginalUrls.get(0)).isEqualTo(this.testUrlData.originalUrl1);
+            assertThat(capturedOriginalUrls.get(1)).startsWith(this.testUrlData.originalUrl1);
         }
 
         {
@@ -82,7 +86,7 @@ class ShortenUrlServiceImplTest {
             verify(this.mangleService, times(1))
                     .mangle(messageCaptor.capture());
             var capturedMessage = messageCaptor.getValue();
-            assertThat(capturedMessage).isEqualTo(this.testOriginalUrl1);
+            assertThat(capturedMessage).isEqualTo(this.testUrlData.originalUrl1);
         }
 
         {
@@ -92,11 +96,11 @@ class ShortenUrlServiceImplTest {
                     .save(originalUrlCaptor.capture(), shortUrlCodeCaptor.capture());
             var capturedOriginalUrl = originalUrlCaptor.getValue();
             var capturedShortUrlCode = shortUrlCodeCaptor.getValue();
-            assertThat(capturedOriginalUrl).isEqualTo(this.testOriginalUrl1);
-            assertThat(capturedShortUrlCode).isEqualTo(this.testShortUrlCode2);
+            assertThat(capturedOriginalUrl).isEqualTo(this.testUrlData.originalUrl1);
+            assertThat(capturedShortUrlCode).isEqualTo(this.testUrlData.shortUrlCode2);
         }
 
-        assertThat(result).isEqualTo(this.testShortUrlCode1);
+        assertThat(result).isEqualTo(this.testUrlData.shortUrlCode1);
     }
 
     @Test
@@ -106,16 +110,15 @@ class ShortenUrlServiceImplTest {
             해당 shortUrlCode 를 반환한다.""")
     void shortenNotExistingOriginalUrl() {
         // given
-        var shortenUrlService = new ShortenUrlServiceImpl(this.mangleService, this.urlRepository);
         when(this.urlRepository.findShortUrlCodeByOriginalUrl(anyString()))
                 .thenReturn(Optional.empty());
         when(this.mangleService.mangle(anyString()))
-                .thenReturn(this.testShortUrlCode1);
+                .thenReturn(this.testUrlData.shortUrlCode1);
         doNothing()
                 .when(this.urlRepository).save(anyString(), anyString());
 
         // when
-        var result = shortenUrlService.shortenUrl(this.testOriginalUrl1);
+        var result = this.shortenUrlService.shortenUrl(this.testUrlData.originalUrl1);
 
         // then
         {
@@ -123,7 +126,7 @@ class ShortenUrlServiceImplTest {
             verify(this.urlRepository, times(1))
                     .findShortUrlCodeByOriginalUrl(originalUrlCaptor.capture());
             var capturedOriginalUrl = originalUrlCaptor.getValue();
-            assertThat(capturedOriginalUrl).isEqualTo(this.testOriginalUrl1);
+            assertThat(capturedOriginalUrl).isEqualTo(this.testUrlData.originalUrl1);
         }
 
         {
@@ -131,7 +134,7 @@ class ShortenUrlServiceImplTest {
             verify(this.mangleService, times(1))
                     .mangle(messageCaptor.capture());
             var capturedMessage = messageCaptor.getValue();
-            assertThat(capturedMessage).isEqualTo(this.testOriginalUrl1);
+            assertThat(capturedMessage).isEqualTo(this.testUrlData.originalUrl1);
         }
 
         {
@@ -141,11 +144,11 @@ class ShortenUrlServiceImplTest {
                     .save(originalUrlCaptor.capture(), shortUrlCodeCaptor.capture());
             var capturedOriginalUrl = originalUrlCaptor.getValue();
             var capturedShortUrlCode = shortUrlCodeCaptor.getValue();
-            assertThat(capturedOriginalUrl).isEqualTo(this.testOriginalUrl1);
-            assertThat(capturedShortUrlCode).isEqualTo(this.testShortUrlCode1);
+            assertThat(capturedOriginalUrl).isEqualTo(this.testUrlData.originalUrl1);
+            assertThat(capturedShortUrlCode).isEqualTo(this.testUrlData.shortUrlCode1);
         }
 
-        assertThat(result).isEqualTo(this.testShortUrlCode1);
+        assertThat(result).isEqualTo(this.testUrlData.shortUrlCode1);
     }
 
     @Test
@@ -157,18 +160,17 @@ class ShortenUrlServiceImplTest {
             해당 shortUrlCode 를 반환한다.""")
     void shortenNotExistingOriginalUrl2() {
         // given
-        var shortenUrlService = new ShortenUrlServiceImpl(this.mangleService, this.urlRepository);
         when(this.urlRepository.findShortUrlCodeByOriginalUrl(anyString()))
                 .thenReturn(Optional.empty());
         when(this.mangleService.mangle(anyString()))
-                .thenReturn(this.testShortUrlCode1)
-                .thenReturn(this.testShortUrlCode2);
+                .thenReturn(this.testUrlData.shortUrlCode1)
+                .thenReturn(this.testUrlData.shortUrlCode2);
         doThrow(new DuplicateShortUrlCodeException())
                 .doNothing()
                 .when(this.urlRepository).save(anyString(), anyString());
 
         // when
-        var result = shortenUrlService.shortenUrl(this.testOriginalUrl1);
+        var result = this.shortenUrlService.shortenUrl(this.testUrlData.originalUrl1);
 
         // then
         {
@@ -176,8 +178,8 @@ class ShortenUrlServiceImplTest {
             verify(this.urlRepository, times(2))
                     .findShortUrlCodeByOriginalUrl(originalUrlCaptor.capture());
             var capturedOriginalUrls = originalUrlCaptor.getAllValues();
-            assertThat(capturedOriginalUrls.get(0)).isEqualTo(this.testOriginalUrl1);
-            assertThat(capturedOriginalUrls.get(1)).startsWith(this.testOriginalUrl1);
+            assertThat(capturedOriginalUrls.get(0)).isEqualTo(this.testUrlData.originalUrl1);
+            assertThat(capturedOriginalUrls.get(1)).startsWith(this.testUrlData.originalUrl1);
         }
 
         {
@@ -185,8 +187,8 @@ class ShortenUrlServiceImplTest {
             verify(this.mangleService, times(2))
                     .mangle(messageCaptor.capture());
             var capturedMessages = messageCaptor.getAllValues();
-            assertThat(capturedMessages.get(0)).isEqualTo(this.testOriginalUrl1);
-            assertThat(capturedMessages.get(1)).startsWith(this.testOriginalUrl1);
+            assertThat(capturedMessages.get(0)).isEqualTo(this.testUrlData.originalUrl1);
+            assertThat(capturedMessages.get(1)).startsWith(this.testUrlData.originalUrl1);
             assertThat(capturedMessages.get(0)).isNotEqualTo(capturedMessages.get(1));
         }
 
@@ -197,13 +199,13 @@ class ShortenUrlServiceImplTest {
                     .save(originalUrlCaptor.capture(), shortUrlCodeCaptor.capture());
             var capturedOriginalUrls = originalUrlCaptor.getAllValues();
             var capturedShortUrlCodes = shortUrlCodeCaptor.getAllValues();
-            assertThat(capturedOriginalUrls.get(0)).isEqualTo(this.testOriginalUrl1);
-            assertThat(capturedOriginalUrls.get(1)).isEqualTo(this.testOriginalUrl1);
-            assertThat(capturedShortUrlCodes.get(0)).isEqualTo(this.testShortUrlCode1);
-            assertThat(capturedShortUrlCodes.get(1)).isEqualTo(this.testShortUrlCode2);
+            assertThat(capturedOriginalUrls.get(0)).isEqualTo(this.testUrlData.originalUrl1);
+            assertThat(capturedOriginalUrls.get(1)).isEqualTo(this.testUrlData.originalUrl1);
+            assertThat(capturedShortUrlCodes.get(0)).isEqualTo(this.testUrlData.shortUrlCode1);
+            assertThat(capturedShortUrlCodes.get(1)).isEqualTo(this.testUrlData.shortUrlCode2);
         }
 
-        assertThat(result).isEqualTo(this.testShortUrlCode2);
+        assertThat(result).isEqualTo(this.testUrlData.shortUrlCode2);
     }
 
     @Test
@@ -215,18 +217,17 @@ class ShortenUrlServiceImplTest {
             RuntimeException 을 발생시킨다.""")
     void shortenNotExistingOriginalUrl3() {
         // given
-        var shortenUrlService = new ShortenUrlServiceImpl(this.mangleService, this.urlRepository);
         when(this.urlRepository.findShortUrlCodeByOriginalUrl(anyString()))
                 .thenReturn(Optional.empty());
         when(this.mangleService.mangle(anyString()))
-                .thenReturn(this.testShortUrlCode1)
-                .thenReturn(this.testShortUrlCode2)
-                .thenReturn(this.testShortUrlCode3);
+                .thenReturn(this.testUrlData.shortUrlCode1)
+                .thenReturn(this.testUrlData.shortUrlCode2)
+                .thenReturn(this.testUrlData.shortUrlCode3);
         doThrow(new DuplicateShortUrlCodeException())
                 .when(this.urlRepository).save(anyString(), anyString());
 
         // when & then
-        assertThatThrownBy(() -> shortenUrlService.shortenUrl(this.testOriginalUrl1))
+        assertThatThrownBy(() -> this.shortenUrlService.shortenUrl(this.testUrlData.originalUrl1))
                 .isInstanceOf(RuntimeException.class);
 
         {
@@ -234,9 +235,9 @@ class ShortenUrlServiceImplTest {
             verify(this.urlRepository, times(3))
                     .findShortUrlCodeByOriginalUrl(originalUrlCaptor.capture());
             var capturedOriginalUrls = originalUrlCaptor.getAllValues();
-            assertThat(capturedOriginalUrls.get(0)).isEqualTo(this.testOriginalUrl1);
-            assertThat(capturedOriginalUrls.get(1)).startsWith(this.testOriginalUrl1);
-            assertThat(capturedOriginalUrls.get(2)).startsWith(this.testOriginalUrl1);
+            assertThat(capturedOriginalUrls.get(0)).isEqualTo(this.testUrlData.originalUrl1);
+            assertThat(capturedOriginalUrls.get(1)).startsWith(this.testUrlData.originalUrl1);
+            assertThat(capturedOriginalUrls.get(2)).startsWith(this.testUrlData.originalUrl1);
         }
 
         {
@@ -244,9 +245,9 @@ class ShortenUrlServiceImplTest {
             verify(this.mangleService, times(3))
                     .mangle(messageCaptor.capture());
             var capturedMessages = messageCaptor.getAllValues();
-            assertThat(capturedMessages.get(0)).isEqualTo(this.testOriginalUrl1);
-            assertThat(capturedMessages.get(1)).startsWith(this.testOriginalUrl1);
-            assertThat(capturedMessages.get(2)).startsWith(this.testOriginalUrl1);
+            assertThat(capturedMessages.get(0)).isEqualTo(this.testUrlData.originalUrl1);
+            assertThat(capturedMessages.get(1)).startsWith(this.testUrlData.originalUrl1);
+            assertThat(capturedMessages.get(2)).startsWith(this.testUrlData.originalUrl1);
             assertThat(capturedMessages.get(0)).isNotEqualTo(capturedMessages.get(1));
             assertThat(capturedMessages.get(0)).isNotEqualTo(capturedMessages.get(2));
             assertThat(capturedMessages.get(1)).isNotEqualTo(capturedMessages.get(2));
@@ -259,12 +260,12 @@ class ShortenUrlServiceImplTest {
                     .save(originalUrlCaptor.capture(), shortUrlCodeCaptor.capture());
             var capturedOriginalUrls = originalUrlCaptor.getAllValues();
             var capturedShortUrlCodes = shortUrlCodeCaptor.getAllValues();
-            assertThat(capturedOriginalUrls.get(0)).isEqualTo(this.testOriginalUrl1);
-            assertThat(capturedOriginalUrls.get(1)).isEqualTo(this.testOriginalUrl1);
-            assertThat(capturedOriginalUrls.get(2)).isEqualTo(this.testOriginalUrl1);
-            assertThat(capturedShortUrlCodes.get(0)).isEqualTo(this.testShortUrlCode1);
-            assertThat(capturedShortUrlCodes.get(1)).isEqualTo(this.testShortUrlCode2);
-            assertThat(capturedShortUrlCodes.get(2)).isEqualTo(this.testShortUrlCode3);
+            assertThat(capturedOriginalUrls.get(0)).isEqualTo(this.testUrlData.originalUrl1);
+            assertThat(capturedOriginalUrls.get(1)).isEqualTo(this.testUrlData.originalUrl1);
+            assertThat(capturedOriginalUrls.get(2)).isEqualTo(this.testUrlData.originalUrl1);
+            assertThat(capturedShortUrlCodes.get(0)).isEqualTo(this.testUrlData.shortUrlCode1);
+            assertThat(capturedShortUrlCodes.get(1)).isEqualTo(this.testUrlData.shortUrlCode2);
+            assertThat(capturedShortUrlCodes.get(2)).isEqualTo(this.testUrlData.shortUrlCode3);
         }
     }
 }
