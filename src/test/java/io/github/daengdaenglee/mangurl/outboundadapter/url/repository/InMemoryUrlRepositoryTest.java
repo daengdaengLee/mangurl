@@ -1,11 +1,11 @@
 package io.github.daengdaenglee.mangurl.outboundadapter.url.repository;
 
 import io.github.daengdaenglee.mangurl.application.url.outboundport.DuplicateShortUrlCodeException;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class InMemoryUrlRepositoryTest {
     private final String testOriginalUrl1 = "https://google.com";
@@ -90,7 +90,7 @@ class InMemoryUrlRepositoryTest {
         urlRepository.save(this.testOriginalUrl1, this.testShortUrlCode1);
 
         // when & then
-        Assertions.assertThatThrownBy(() -> urlRepository.save(this.testOriginalUrl2, this.testShortUrlCode1))
+        assertThatThrownBy(() -> urlRepository.save(this.testOriginalUrl2, this.testShortUrlCode1))
                 .isInstanceOf(DuplicateShortUrlCodeException.class);
     }
 
