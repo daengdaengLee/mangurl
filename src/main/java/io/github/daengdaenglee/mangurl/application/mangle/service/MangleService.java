@@ -1,17 +1,17 @@
 package io.github.daengdaenglee.mangurl.application.mangle.service;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-@RequiredArgsConstructor
+@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 @Service
-public class MangleService {
+class MangleService {
     private final HashService hashService;
     private final Base62EncodeService base62EncodeService;
-
     private final int len = 7;
 
-    public String mangle(String longUrl) {
+    String mangle(String longUrl) {
         var hashed = this.hashService.hash(longUrl);
         var encoded = this.base62EncodeService.encode(hashed);
         var sliced = this.slice(encoded);
