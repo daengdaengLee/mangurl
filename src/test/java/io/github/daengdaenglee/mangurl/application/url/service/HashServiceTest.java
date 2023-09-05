@@ -33,21 +33,4 @@ class HashServiceTest {
         var expected = this.md.digest();
         assertThat(hashed).isEqualTo(expected);
     }
-
-    @Test
-    @DisplayName("입력한 메시지에 소금을 쳐서 MD5 알고리즘으로 해싱한 결과를 바이트 배열로 반환한다.")
-    void hashWithSalt() {
-        // given
-        var salt = "THIS_IS_SALT";
-        var message = "https://google.com";
-        var hashService = new HashService();
-
-        // when
-        var hashed = hashService.hash(message, salt);
-
-        // then
-        this.md.update((message + salt).getBytes());
-        var expected = this.md.digest();
-        assertThat(hashed).isEqualTo(expected);
-    }
 }

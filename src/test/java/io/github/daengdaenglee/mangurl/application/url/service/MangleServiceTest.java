@@ -1,5 +1,6 @@
 package io.github.daengdaenglee.mangurl.application.url.service;
 
+import io.github.daengdaenglee.mangurl.TestUrlData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -8,11 +9,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class MangleServiceTest {
     private MangleService mangleService;
-
-    private String longUrl1;
-    private String shortUrlCode1;
-    private String longUrl2;
-    private String shortUrlCode2;
+    private TestUrlData testUrlData;
 
     @BeforeEach
     void beforeEach() {
@@ -22,23 +19,18 @@ class MangleServiceTest {
                 hashService,
                 base62EncodeService);
 
-        this.longUrl1 = "https://google.com";
-        this.longUrl2 = "https://github.com";
-
-        // 미리 hash -> encode -> substring 한 테스트 데이터 준비
-        this.shortUrlCode1 = "Ep0B3mS";
-        this.shortUrlCode2 = "BdrFjrW";
+        this.testUrlData = new TestUrlData();
     }
 
     @Test
     @DisplayName("mangle 한 shortUrl 은 7글자여야 한다.")
     void length7() {
         // given
-        // longUrl1, longUrl2 사용
+        // originalUrl1, originalUrl2 사용
 
         // when
-        var mangled1 = this.mangleService.mangle(this.longUrl1);
-        var mangled2 = this.mangleService.mangle(this.longUrl2);
+        var mangled1 = this.mangleService.mangle(this.testUrlData.originalUrl1);
+        var mangled2 = this.mangleService.mangle(this.testUrlData.originalUrl2);
 
         // then
         assertThat(mangled1.length()).isEqualTo(7);
@@ -49,26 +41,26 @@ class MangleServiceTest {
     @DisplayName("mangle 한 결과는 hash -> encode -> substring -> 0 padding 한 결과와 같다.")
     void isEqual() {
         // given
-        // longUrl1, longUrl2 사용
+        // originalUrl1, originalUrl2 사용
 
         // when
-        var mangled1 = this.mangleService.mangle(this.longUrl1);
-        var mangled2 = this.mangleService.mangle(this.longUrl2);
+        var mangled1 = this.mangleService.mangle(this.testUrlData.originalUrl1);
+        var mangled2 = this.mangleService.mangle(this.testUrlData.originalUrl2);
 
         // then
-        assertThat(mangled1).isEqualTo(this.shortUrlCode1);
-        assertThat(mangled2).isEqualTo(this.shortUrlCode2);
+        assertThat(mangled1).isEqualTo(this.testUrlData.shortUrlCode1);
+        assertThat(mangled2).isEqualTo(this.testUrlData.shortUrlCode2);
     }
 
     @Test
     @DisplayName("같은 URL 을 넣으면 같은 결과가 나온다.")
     void sameInputSameOutput() {
         // given
-        // longUrl1 사용
+        // originalUrl1 사용
 
         // when
-        var mangled1 = this.mangleService.mangle(this.longUrl1);
-        var mangled2 = this.mangleService.mangle(this.longUrl1);
+        var mangled1 = this.mangleService.mangle(this.testUrlData.originalUrl1);
+        var mangled2 = this.mangleService.mangle(this.testUrlData.originalUrl1);
 
         // then
         assertThat(mangled1).isEqualTo(mangled2);
@@ -78,11 +70,11 @@ class MangleServiceTest {
     @DisplayName("다른 URL 을 넣으면 다른 결과가 나온다. (해시 충돌 안 나는 일반적인 상황 테스트)")
     void diffInputDiffOutput() {
         // given
-        // longUrl1, longUrl2 사용
+        // originalUrl1, originalUrl2 사용
 
         // when
-        var mangled1 = this.mangleService.mangle(this.longUrl1);
-        var mangled2 = this.mangleService.mangle(this.longUrl2);
+        var mangled1 = this.mangleService.mangle(this.testUrlData.originalUrl1);
+        var mangled2 = this.mangleService.mangle(this.testUrlData.originalUrl2);
 
         // then
         assertThat(mangled1).isNotEqualTo(mangled2);

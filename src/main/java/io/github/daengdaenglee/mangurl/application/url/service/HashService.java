@@ -22,8 +22,4 @@ class HashService {
         this.md.update(message.getBytes(StandardCharsets.UTF_8));
         return md.digest();
     }
-
-    byte[] hash(String message, String salt) {
-        return this.hash(message + salt);
-    }
 }

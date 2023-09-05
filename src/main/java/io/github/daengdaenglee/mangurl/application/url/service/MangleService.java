@@ -11,8 +11,8 @@ class MangleService {
     private final Base62EncodeService base62EncodeService;
     private final int len = 7;
 
-    String mangle(String longUrl) {
-        var hashed = this.hashService.hash(longUrl);
+    String mangle(String message) {
+        var hashed = this.hashService.hash(message);
         var encoded = this.base62EncodeService.encode(hashed);
         var sliced = this.slice(encoded);
         return this.padZero(sliced);
