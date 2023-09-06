@@ -25,6 +25,11 @@ public class WebController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
+    @RequestMapping
+    public String home() {
+        return "redirect:/app";
+    }
+
     @GetMapping("/app")
     public String app() {
         return "app";
