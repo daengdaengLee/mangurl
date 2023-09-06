@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Mangurl</title>
+</head>
+<body>
+
+<form action method="post">
+    <label>
+        <span>Original URL: </span>
+        <input name="originalUrl" type="url" th:value="${param.originalUrl}">
+    </label>
+    <button type="submit">Shorten</button>
+</form>
+
+<p th:if="${!#strings.isEmpty(param.shortUrl)}">
+    <span>Short URL: </span>
+    <a target="_blank"
+       th:href="@{{shortUrl}(shortUrl=${param.shortUrl})}"
+       th:text="${param.shortUrl}"/>
+    <a target="_self" th:href="@{/app}" style="margin-left: 10px">Clear</a>
+</p>
+
+</body>
+</html>

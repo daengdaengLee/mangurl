@@ -17,11 +17,11 @@ public class ApiController {
 
     @PostMapping("/shorten")
     public ShortenResponse shorten(@RequestBody ShortenRequest shortenRequest) {
-        var shortUrl = this.shortenUrlService.shortenUrl(shortenRequest.data().url());
+        var shortUrlCode = this.shortenUrlService.shortenUrl(shortenRequest.data().url());
         return ShortenResponse
                 .builder()
                 // @TODO origin 주소 설정으로 분리
-                .shortUrl("http://localhost:8080/" + shortUrl)
+                .shortUrl("http://localhost:8080/" + shortUrlCode)
                 .build();
     }
 }
