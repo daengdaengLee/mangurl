@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -12,10 +12,18 @@
 <form action method="post">
     <label>
         <span>Original URL: </span>
-        <input name="originalUrl" type="url">
+        <input name="originalUrl" type="url" th:value="${param.originalUrl}">
     </label>
     <button type="submit">Shorten</button>
 </form>
+
+<p th:if="${!#strings.isEmpty(param.shortUrl)}">
+    <span>Short URL: </span>
+    <a target="_blank"
+       th:href="@{{shortUrl}(shortUrl=${param.shortUrl})}"
+       th:text="${param.shortUrl}"/>
+    <a target="_self" th:href="@{/app}" style="margin-left: 10px">Clear</a>
+</p>
 
 </body>
 </html>
