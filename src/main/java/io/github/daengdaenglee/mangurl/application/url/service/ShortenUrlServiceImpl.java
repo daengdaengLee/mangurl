@@ -13,7 +13,7 @@ import java.util.UUID;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class ShortenUrlServiceImpl implements ShortenUrlService {
+class ShortenUrlServiceImpl implements ShortenUrlService {
     private final MangleService mangleService;
     private final UrlRepository urlRepository;
 

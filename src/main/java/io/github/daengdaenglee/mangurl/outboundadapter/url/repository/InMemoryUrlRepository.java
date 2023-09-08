@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Repository
-public class InMemoryUrlRepository implements UrlRepository {
+class InMemoryUrlRepository implements UrlRepository {
     private final ConcurrentHashMap<String, String> originalUrlByShortUrlCode = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, String> shortUrlCodeByOriginalUrl = new ConcurrentHashMap<>();
 

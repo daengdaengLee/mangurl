@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
-public class ApiController {
+class ApiController {
     private final ShortenUrlService shortenUrlService;
 
     @PostMapping("/shorten")
-    public ShortenResponse shorten(@RequestBody ShortenRequest shortenRequest) {
+    ShortenResponse shorten(@RequestBody ShortenRequest shortenRequest) {
         var shortUrlCode = this.shortenUrlService.shortenUrl(shortenRequest.data().url());
         return ShortenResponse
                 .builder()

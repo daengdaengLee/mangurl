@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
-public class RestoreUrlServiceImpl implements RestoreUrlService {
+class RestoreUrlServiceImpl implements RestoreUrlService {
     private final UrlRepository urlRepository;
 
     @Override
