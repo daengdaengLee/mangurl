@@ -17,19 +17,19 @@
     <button type="submit">Shorten</button>
 </form>
 
-<section th:if="${!#strings.isEmpty(param.originalUrl) || !#strings.isEmpty(param.shortUrl)}">
-    <p th:if="${!#strings.isEmpty(param.originalUrl)}">
+<section th:if="${!#strings.isEmpty(param.resOriginalUrl) || !#strings.isEmpty(param.resShortUrl)}">
+    <p th:if="${!#strings.isEmpty(param.resOriginalUrl)}">
         <span>Original URL: </span>
         <a target="_blank"
-           th:href="@{{originalUrl}(originalUrl=${param.originalUrl})}"
-           th:text="${param.originalUrl}"/>
+           th:href="@{{url}(url=${param.resOriginalUrl})}"
+           th:text="${param.resOriginalUrl}"/>
     </p>
 
-    <p th:if="${!#strings.isEmpty(param.shortUrl)}">
+    <p th:if="${!#strings.isEmpty(param.resShortUrl)}">
         <span>Short URL: </span>
         <a target="_blank"
-           th:href="@{{shortUrl}(shortUrl=${param.shortUrl})}"
-           th:text="${param.shortUrl}"/>
+           th:href="@{{url}(url=${param.resShortUrl})}"
+           th:text="${param.resShortUrl}"/>
     </p>
 
     <a target="_self" th:href="@{/app}">Clear</a>
