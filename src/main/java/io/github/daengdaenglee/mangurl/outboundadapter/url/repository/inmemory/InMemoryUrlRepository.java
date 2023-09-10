@@ -1,14 +1,12 @@
-package io.github.daengdaenglee.mangurl.outboundadapter.url.repository;
+package io.github.daengdaenglee.mangurl.outboundadapter.url.repository.inmemory;
 
 import io.github.daengdaenglee.mangurl.application.url.outboundport.DuplicateShortUrlCodeException;
 import io.github.daengdaenglee.mangurl.application.url.outboundport.UrlRepository;
-import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Repository
-class InMemoryUrlRepository implements UrlRepository {
+public class InMemoryUrlRepository implements UrlRepository {
     private final ConcurrentHashMap<String, String> originalUrlByShortUrlCode = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, String> shortUrlCodeByOriginalUrl = new ConcurrentHashMap<>();
 

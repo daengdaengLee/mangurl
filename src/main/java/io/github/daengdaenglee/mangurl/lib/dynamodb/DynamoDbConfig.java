@@ -1,12 +1,12 @@
 package io.github.daengdaenglee.mangurl.lib.dynamodb;
 
+import io.github.daengdaenglee.mangurl.config.properties.MangurlProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
-import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 
 import java.net.URI;
@@ -16,17 +16,24 @@ import java.net.URISyntaxException;
 @Configuration
 class DynamoDbConfig {
     @Bean
-    DynamoDbClient dynamoDbClient() throws URISyntaxException {
-        return DynamoDbClient.builder()
-                // @TODO application.yml 설정을 통해 필요한 경우 credentials provider 설정
-                //       운영 환경에서는 기본 자격 증명 공급자 체인(default credentials provider chain)을 사용 -> 별도의 인증 정보 추가 X
-                .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create("local", "local")))
-                // @TODO application.yml 설정을 통해 필요한 경우 endpoint 설정
-                .endpointOverride(new URI("http://localhost:8000"))
-                // @TODO application.yml 설정을 통해 region 설정
-                // 서울 리전
-                .region(Region.AP_NORTHEAST_2)
-                .build();
+    DynamoDbClient dynamoDbClient(MangurlProperties mangurlProperties) throws URISyntaxException {
+        var builder = DynamoDbClient.builder();
+
+        mangurlProperties.aws()
+                .credentials()
+                .map(credentials -> AwsBasicCredentials.create(
+                        credentials.accessKeyId(),
+                        credentials.secretAccessKey()))
+                .map(StaticCredentialsProvider::create)
+                .ifPresent(builder::credentialsProvider);
+
+        mangurlProperties.dynamodb().region().ifPresent(builder::region);
+
+        if (mangurlProperties.dynamodb().endpoint().isPresent()) {
+            builder.endpointOverride(new URI(mangurlProperties.dynamodb().endpoint().get()));
+        }
+
+        return builder.build();
     }
 
     @Bean

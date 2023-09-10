@@ -1,8 +1,11 @@
 package io.github.daengdaenglee.mangurl.outboundadapter.url.repository.dynamodb;
 
+import io.github.daengdaenglee.mangurl.config.properties.MangurlProperties;
+import io.github.daengdaenglee.mangurl.config.properties.MangurlProperties.RepositoryProperties.DdlAuto;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.*;
@@ -16,16 +19,24 @@ import java.util.stream.Stream;
 @Slf4j
 @RequiredArgsConstructor
 @Component
+@Conditional(DynamoDbCondition.class)
 class UrlEntryConfigurer {
+    private final MangurlProperties mangurlProperties;
     private final DynamoDbClient client;
     private final UrlEntry.DynamoDb urlEntryDynamoDb;
 
-    // @TODO application.yml 설정에 따라 어떤 동작 실행할 지 결정
     @PostConstruct
     void postConstruct() {
-        this.drop();
-        this.create();
-        this.validate();
+        var ddlAuto = this.mangurlProperties.repository().ddlAuto();
+        if (ddlAuto.contains(DdlAuto.DROP)) {
+            this.drop();
+        }
+        if (ddlAuto.contains(DdlAuto.CREATE)) {
+            this.create();
+        }
+        if (ddlAuto.contains(DdlAuto.VALIDATE)) {
+            this.validate();
+        }
     }
 
     private void drop() {
@@ -181,33 +192,29 @@ class UrlEntryConfigurer {
     }
 
     private BiConsumer<String, ScalarAttributeType> createAttributeValidator(List<AttributeDefinition> attributeDefinitions) {
-        return (attributeName, attributeType) -> {
-            attributeDefinitions.stream()
-                    .filter(ad -> ad.attributeName().equals(attributeName))
-                    .findAny()
-                    .ifPresentOrElse(
-                            attr -> {
-                                if (attr.attributeType() != attributeType) {
-                                    throw new RuntimeException(attributeName + " 속성이 " + attributeType + " 타입이 아닙니다.");
-                                }
-                            },
-                            () -> {
-                                throw new RuntimeException(attributeName + " 속성이 없습니다.");
-                            });
-        };
+        return (attributeName, attributeType) -> attributeDefinitions.stream()
+                .filter(ad -> ad.attributeName().equals(attributeName))
+                .findAny()
+                .ifPresentOrElse(
+                        attr -> {
+                            if (attr.attributeType() != attributeType) {
+                                throw new RuntimeException(attributeName + " 속성이 " + attributeType + " 타입이 아닙니다.");
+                            }
+                        },
+                        () -> {
+                            throw new RuntimeException(attributeName + " 속성이 없습니다.");
+                        });
     }
 
     private BiConsumer<String, KeyType> createKeyValidator(List<KeySchemaElement> keySchemaElements) {
-        return (keyName, keyType) -> {
-            keySchemaElements.stream()
-                    .filter(key -> key.attributeName().equals(keyName))
-                    .peek(key -> {
-                        if (key.keyType() != keyType) {
-                            throw new RuntimeException(keyName + " 이 " + keyType + " Key 타입이 아닙니다.");
-                        }
-                    })
-                    .findAny()
-                    .orElseThrow(() -> new RuntimeException(keyName + " Key 가 없습니다."));
-        };
+        return (keyName, keyType) -> keySchemaElements.stream()
+                .filter(key -> key.attributeName().equals(keyName))
+                .peek(key -> {
+                    if (key.keyType() != keyType) {
+                        throw new RuntimeException(keyName + " 이 " + keyType + " Key 타입이 아닙니다.");
+                    }
+                })
+                .findAny()
+                .orElseThrow(() -> new RuntimeException(keyName + " Key 가 없습니다."));
     }
 }

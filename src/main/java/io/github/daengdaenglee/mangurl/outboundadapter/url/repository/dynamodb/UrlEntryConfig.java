@@ -6,15 +6,10 @@ import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
 
 @Configuration
-public class UrlEntryConfig {
+class UrlEntryConfig {
     @Bean
-    TableSchema<UrlEntry> urlEntryTableSchema() {
-        return TableSchema.fromBean(UrlEntry.class);
-    }
-
-    @Bean
-    UrlEntry.DynamoDb urlEntryDynamoDb(DynamoDbEnhancedClient client, TableSchema<UrlEntry> schema) {
-        var table = client.table("UrlEntry", schema);
+    UrlEntry.DynamoDb urlEntryDynamoDb(DynamoDbEnhancedClient client) {
+        var table = client.table("UrlEntry", TableSchema.fromBean(UrlEntry.class));
         var originalUrlIndex = table.index("OriginalUrlIndex");
         return new UrlEntry.DynamoDb(table, originalUrlIndex);
     }
