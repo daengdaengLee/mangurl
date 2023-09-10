@@ -1,4 +1,4 @@
-package io.github.daengdaenglee.mangurl.outboundadapter.url.repository.dynamodb;
+package io.github.daengdaenglee.mangurl.lib.dynamodb;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
