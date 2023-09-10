@@ -3,6 +3,7 @@ spring:
     active: "local"
     group:
       local: "mangurl-local"
+      test: "mangurl-test"
 ---
 spring:
   config:
@@ -10,3 +11,10 @@ spring:
       on-profile: "mangurl-local"
     import:
       - "classpath:mangurl/local.yml"
+---
+spring:
+  config:
+    activate:
+      on-profile: "mangurl-test"
+    import:
+      - "classpath:mangurl/test.yml"
