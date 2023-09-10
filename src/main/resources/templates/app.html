@@ -12,18 +12,28 @@
 <form action method="post">
     <label>
         <span>Original URL: </span>
-        <input name="originalUrl" type="url" th:value="${param.originalUrl}">
+        <input name="originalUrl" type="url">
     </label>
     <button type="submit">Shorten</button>
 </form>
 
-<p th:if="${!#strings.isEmpty(param.shortUrl)}">
-    <span>Short URL: </span>
-    <a target="_blank"
-       th:href="@{{shortUrl}(shortUrl=${param.shortUrl})}"
-       th:text="${param.shortUrl}"/>
-    <a target="_self" th:href="@{/app}" style="margin-left: 10px">Clear</a>
-</p>
+<section th:if="${!#strings.isEmpty(param.resOriginalUrl) || !#strings.isEmpty(param.resShortUrl)}">
+    <p th:if="${!#strings.isEmpty(param.resOriginalUrl)}">
+        <span>Original URL: </span>
+        <a target="_blank"
+           th:href="@{{url}(url=${param.resOriginalUrl})}"
+           th:text="${param.resOriginalUrl}"/>
+    </p>
+
+    <p th:if="${!#strings.isEmpty(param.resShortUrl)}">
+        <span>Short URL: </span>
+        <a target="_blank"
+           th:href="@{{url}(url=${param.resShortUrl})}"
+           th:text="${param.resShortUrl}"/>
+    </p>
+
+    <a target="_self" th:href="@{/app}">Clear</a>
+</section>
 
 </body>
 </html>
