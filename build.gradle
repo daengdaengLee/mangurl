@@ -35,3 +35,7 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+bootBuildImage {
+    tags = ["${project.name}:${project.version}", "${project.name}:latest"]
+}
