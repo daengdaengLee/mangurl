@@ -4,4 +4,4 @@
 
 ## TL;DR
 
-- URL shortening service
+- This is a URL shortening service.

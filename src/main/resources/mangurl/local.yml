@@ -1,0 +1,15 @@
+mangurl:
+  origin: "http://localhost:8080/"
+  repository:
+    type: "dynamodb"
+    ddl-auto:
+      - "drop"
+      - "create"
+      - "validate"
+  aws:
+    credentials:
+      access-key-id: "local"
+      secret-access-key: "local"
+  dynamodb:
+    region: "ap-northeast-2"
+    endpoint: "http://localhost:8000"

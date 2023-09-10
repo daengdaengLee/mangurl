@@ -13,12 +13,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @RequiredArgsConstructor
 @Controller
-public class WebController {
+class WebController {
     private final ShortenUrlService shortenUrlService;
     private final RestoreUrlService restoreUrlService;
 
     @RequestMapping("/{shortUrlCode}")
-    public String redirect(@PathVariable String shortUrlCode, HttpServletResponse response) {
+    String redirect(@PathVariable String shortUrlCode, HttpServletResponse response) {
         return this.restoreUrlService.restoreUrl(shortUrlCode)
                 .map(response::encodeRedirectURL)
                 .map(redirectUrl -> "redirect:" + redirectUrl)
@@ -26,18 +26,18 @@ public class WebController {
     }
 
     @RequestMapping
-    public String home() {
+    String home() {
         return "redirect:/app";
     }
 
     @GetMapping("/app")
-    public String app() {
+    String app() {
         return "app";
     }
 
     // @TODO 임시, 나중에 app.html 에서 JS 로 API 호출하는 형태로 변경
     @PostMapping("/app")
-    public String shorten(
+    String shorten(
             @ModelAttribute ShortenUrlForm shortenUrlForm,
             RedirectAttributes redirectAttributes) {
         var originalUrl = shortenUrlForm.originalUrl();

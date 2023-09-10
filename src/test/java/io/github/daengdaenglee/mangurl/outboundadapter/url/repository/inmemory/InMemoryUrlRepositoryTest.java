@@ -1,4 +1,4 @@
-package io.github.daengdaenglee.mangurl.outboundadapter.url.repository;
+package io.github.daengdaenglee.mangurl.outboundadapter.url.repository.inmemory;
 
 import io.github.daengdaenglee.mangurl.TestUrlData;
 import io.github.daengdaenglee.mangurl.application.url.outboundport.DuplicateShortUrlCodeException;
