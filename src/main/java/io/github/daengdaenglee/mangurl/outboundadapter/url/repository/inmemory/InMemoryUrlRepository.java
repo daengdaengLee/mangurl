@@ -2,11 +2,18 @@ package io.github.daengdaenglee.mangurl.outboundadapter.url.repository.inmemory;
 
 import io.github.daengdaenglee.mangurl.application.url.outboundport.DuplicateShortUrlCodeException;
 import io.github.daengdaenglee.mangurl.application.url.outboundport.UrlRepository;
+import org.springframework.context.annotation.Conditional;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class InMemoryUrlRepository implements UrlRepository {
+@Repository
+// IDE 에서 Conditional 조건만으로 정확하게 판단하지 못 해서 fallback 조건으로 걸어둠
+@Primary
+@Conditional(InMemoryCondition.class)
+class InMemoryUrlRepository implements UrlRepository {
     private final ConcurrentHashMap<String, String> originalUrlByShortUrlCode = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, String> shortUrlCodeByOriginalUrl = new ConcurrentHashMap<>();
 

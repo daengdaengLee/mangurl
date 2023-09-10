@@ -23,6 +23,6 @@ public class UrlEntry {
     @Setter
     private String originalUrl;
 
-    public record DynamoDb(DynamoDbTable<UrlEntry> table, DynamoDbIndex<UrlEntry> originalUrlIndex) {
+    record DynamoDb(DynamoDbTable<UrlEntry> table, DynamoDbIndex<UrlEntry> originalUrlIndex) {
     }
 }
