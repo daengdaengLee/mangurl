@@ -1,0 +1,3 @@
+mangurl:
+  dynamodb:
+    endpoint: "http://mangurl-dynamodb:8000"

@@ -2,8 +2,13 @@ spring:
   profiles:
     active: "local"
     group:
-      local: "mangurl-local"
-      test: "mangurl-test"
+      local:
+        - "mangurl-local"
+      local-container:
+        - "mangurl-local"
+        - "mangurl-local-container"
+      test:
+        - "mangurl-test"
 ---
 spring:
   config:
@@ -11,6 +16,13 @@ spring:
       on-profile: "mangurl-local"
     import:
       - "classpath:mangurl/local.yml"
+---
+spring:
+  config:
+    activate:
+      on-profile: "mangurl-local-container"
+    import:
+      - "classpath:mangurl/local-container.yml"
 ---
 spring:
   config:
