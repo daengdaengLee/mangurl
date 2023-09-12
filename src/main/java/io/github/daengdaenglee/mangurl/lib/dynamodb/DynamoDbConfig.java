@@ -16,22 +16,26 @@ import java.net.URISyntaxException;
 @Configuration
 class DynamoDbConfig {
     @Bean
-    DynamoDbClient dynamoDbClient(MangurlProperties mangurlProperties) throws URISyntaxException {
+    DynamoDbClient dynamoDbClient(MangurlProperties mangurlProperties) {
         var builder = DynamoDbClient.builder();
 
         mangurlProperties.aws()
-                .credentials()
+                .flatMap(MangurlProperties.AwsProperties::credentials)
                 .map(credentials -> AwsBasicCredentials.create(
                         credentials.accessKeyId(),
                         credentials.secretAccessKey()))
                 .map(StaticCredentialsProvider::create)
                 .ifPresent(builder::credentialsProvider);
 
-        mangurlProperties.dynamodb().region().ifPresent(builder::region);
+        mangurlProperties.aws()
+                .map(MangurlProperties.AwsProperties::region)
+                .ifPresent(builder::region);
 
-        if (mangurlProperties.dynamodb().endpoint().isPresent()) {
-            builder.endpointOverride(new URI(mangurlProperties.dynamodb().endpoint().get()));
-        }
+        mangurlProperties.aws()
+                .flatMap(MangurlProperties.AwsProperties::dynamoDb)
+                .flatMap(MangurlProperties.AwsProperties.DynamoDbProperties::endpoint)
+                .map(this::createUri)
+                .ifPresent(builder::endpointOverride);
 
         return builder.build();
     }
@@ -41,5 +45,13 @@ class DynamoDbConfig {
         return DynamoDbEnhancedClient.builder()
                 .dynamoDbClient(client)
                 .build();
+    }
+
+    private URI createUri(String value) {
+        try {
+            return new URI(value);
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 }
