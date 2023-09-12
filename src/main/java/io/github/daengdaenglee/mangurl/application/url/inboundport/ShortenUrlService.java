@@ -12,7 +12,7 @@ public interface ShortenUrlService {
 
     @Getter
     @RequiredArgsConstructor
-    class HashCollisionException extends RuntimeException {
+    class HashCollisionException extends IllegalStateException {
         private final String url;
     }
 
