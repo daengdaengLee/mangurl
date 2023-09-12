@@ -42,25 +42,11 @@ class ShortenUrlServiceImplTest {
     }
 
     @Test
-    @DisplayName("URL 객체로 만들 수 없는 잘못된 형식의 originalUrl 을 단축하려는 경우, IllegalUrlException 을 던진다.")
-    void shortenIllegalOriginalUrl1() {
+    @DisplayName("잘못된 originalUrl 을 단축하려는 경우, IllegalUrlException 을 던진다.")
+    void shortenIllegalOriginalUrl() {
         // given
-        var illegalUrl = "abc://illegal.com";
-        when(this.encodeUrlService.isValid(illegalUrl)).thenReturn(false);
-
-        // when & then
-        assertThatThrownBy(() -> this.shortenUrlService.shortenUrl(illegalUrl))
-                .isInstanceOf(ShortenUrlService.IllegalUrlException.class)
-                .extracting(e -> ((ShortenUrlService.IllegalUrlException) e).getUrl())
-                .isEqualTo(illegalUrl);
-        this.verifyEncodeUrlServiceValidate(illegalUrl);
-    }
-
-    @Test
-    @DisplayName("URI 객체로 만들 수 없는 잘못된 형식의 originalUrl 을 단축하려는 경우, IllegalUrlException 을 던진다.")
-    void shortenIllegalOriginalUrl2() {
-        // given
-        var illegalUrl = "https://illegal.com?q=a|b";
+        // 프로토콜 오류, URL 에서 허용 안 하는 "|" 문자 사용
+        var illegalUrl = "abc://illegal.com?q=a|b";
         when(this.encodeUrlService.isValid(illegalUrl)).thenReturn(false);
 
         // when & then
