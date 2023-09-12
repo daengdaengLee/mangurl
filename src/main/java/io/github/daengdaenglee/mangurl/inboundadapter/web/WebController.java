@@ -44,6 +44,7 @@ class WebController {
         var shortUrlCode = this.shortenUrlService.shortenUrl(originalUrl);
         var shortUrl = "http://localhost:8080/" + shortUrlCode;
 
+        redirectAttributes.addAttribute("result", "");
         redirectAttributes.addAttribute("resOriginalUrl", originalUrl);
         redirectAttributes.addAttribute("resShortUrl", shortUrl);
         return "redirect:/app";
