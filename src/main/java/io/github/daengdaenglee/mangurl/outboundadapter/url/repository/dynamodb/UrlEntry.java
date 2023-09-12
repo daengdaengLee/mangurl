@@ -13,7 +13,8 @@ import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSecon
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @DynamoDbBean
 public class UrlEntry {
-    private static final String ORIGINAL_URL_INDEX_NAME = "OriginalUrlIndex";
+    static final String TABLE_NAME = "UrlEntry";
+    static final String ORIGINAL_URL_INDEX_NAME = "OriginalUrlIndex";
     @Getter(onMethod = @__({
             @DynamoDbPartitionKey,
             @DynamoDbSecondarySortKey(indexNames = UrlEntry.ORIGINAL_URL_INDEX_NAME)}))

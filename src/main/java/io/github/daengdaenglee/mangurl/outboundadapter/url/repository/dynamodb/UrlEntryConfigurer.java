@@ -57,7 +57,7 @@ class UrlEntryConfigurer {
 
         this.urlEntryDynamoDb.table().createTable(builder -> builder
                 .globalSecondaryIndices(gsi -> gsi
-                        .indexName("OriginalUrlIndex")
+                        .indexName(UrlEntry.ORIGINAL_URL_INDEX_NAME)
                         .projection(p -> p.projectionType(ProjectionType.KEYS_ONLY))
                         .provisionedThroughput(b -> b
                                 .readCapacityUnits(1L)
