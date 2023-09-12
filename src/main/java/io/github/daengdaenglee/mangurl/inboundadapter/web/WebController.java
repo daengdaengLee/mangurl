@@ -3,13 +3,14 @@ package io.github.daengdaenglee.mangurl.inboundadapter.web;
 import io.github.daengdaenglee.mangurl.application.url.inboundport.RestoreUrlService;
 import io.github.daengdaenglee.mangurl.application.url.inboundport.ShortenUrlService;
 import io.github.daengdaenglee.mangurl.inboundadapter.web.form.ShortenUrlForm;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.net.URL;
 
 @RequiredArgsConstructor
 @Controller
@@ -18,10 +19,16 @@ class WebController {
     private final RestoreUrlService restoreUrlService;
 
     @RequestMapping("/{shortUrlCode}")
-    String redirect(@PathVariable String shortUrlCode, HttpServletResponse response) {
+    String redirect(@PathVariable String shortUrlCode) {
         return this.restoreUrlService.restoreUrl(shortUrlCode)
-                .map(response::encodeRedirectURL)
-                .map(redirectUrl -> "redirect:" + redirectUrl)
+                .map(url -> {
+                    try {
+                        return new URL(url).toURI().toASCIIString();
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .map(url -> "redirect:" + url)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
