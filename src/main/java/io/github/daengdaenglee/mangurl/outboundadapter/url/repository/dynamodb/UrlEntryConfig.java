@@ -12,7 +12,7 @@ class UrlEntryConfig {
     @Bean
     UrlEntry.DynamoDb urlEntryDynamoDb(DynamoDbEnhancedClient client) {
         var table = client.table("UrlEntry", TableSchema.fromBean(UrlEntry.class));
-        var originalUrlIndex = table.index("OriginalUrlIndex");
+        var originalUrlIndex = table.index(UrlEntry.ORIGINAL_URL_INDEX_NAME);
         return new UrlEntry.DynamoDb(table, originalUrlIndex);
     }
 }
