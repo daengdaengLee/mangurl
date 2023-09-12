@@ -9,33 +9,33 @@
 </head>
 <body>
 
-<form action method="post" th:if="${!param.keySet().contains('result')}">
+<form action method="post" th:if="${!isResult}">
     <label>
         <span>Original URL: </span>
-        <input name="originalUrl" type="url" th:value="${param.prevOriginalUrl}">
+        <input name="originalUrl" type="url" th:value="${prevOriginalUrl}">
     </label>
     <a th:href="@{/app}">Clear</a>
     <button type="submit">Shorten</button>
 </form>
 
-<section th:if="${param.keySet().contains('result')}">
+<section th:if="${isResult}">
     <p>
         <span>Original URL: </span>
         <a target="_blank"
-           th:href="@{{url}(url=${param.resOriginalUrl})}"
-           th:text="${param.resOriginalUrl}">
+           th:href="@{{url}(url=${resOriginalUrl})}"
+           th:text="${resOriginalUrl}">
         </a>
     </p>
 
     <p>
         <span>Short URL: </span>
         <a target="_blank"
-           th:href="@{{url}(url=${param.resShortUrl})}"
-           th:text="${param.resShortUrl}">
+           th:href="@{{url}(url=${resShortUrl})}"
+           th:text="${resShortUrl}">
         </a>
     </p>
 
-    <a target="_self" th:href="@{/app(prevOriginalUrl=${param.resOriginalUrl})}">Back</a>
+    <a target="_self" th:href="@{/app(prevOriginalUrl=${resOriginalUrl})}">Back</a>
 </section>
 
 </body>
