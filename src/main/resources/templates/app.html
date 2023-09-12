@@ -22,17 +22,23 @@
     <p>
         <span>Original URL: </span>
         <a target="_blank"
-           th:href="@{{url}(url=${resOriginalUrl})}"
+           th:if="${!#strings.isEmpty(resEncodedOriginalUrl)}"
+           th:href="@{${resEncodedOriginalUrl}}"
            th:text="${resOriginalUrl}">
         </a>
+        <span th:if="${#strings.isEmpty(resEncodedOriginalUrl)}"
+              th:text="|Invalid URL!!! - ${resOriginalUrl}|"></span>
     </p>
 
     <p>
         <span>Short URL: </span>
         <a target="_blank"
-           th:href="@{{url}(url=${resShortUrl})}"
+           th:if="${!#strings.isEmpty(resEncodedShortUrl)}"
+           th:href="@{${resEncodedShortUrl}}"
            th:text="${resShortUrl}">
         </a>
+        <span th:if="${#strings.isEmpty(resEncodedShortUrl)}"
+              th:text="|Invalid URL!!! - ${resShortUrl}|"></span>
     </p>
 
     <a target="_self" th:href="@{/app(prevOriginalUrl=${resOriginalUrl})}">Back</a>

@@ -1,5 +1,6 @@
 package io.github.daengdaenglee.mangurl.inboundadapter.web;
 
+import io.github.daengdaenglee.mangurl.application.url.inboundport.EncodeUrlService;
 import io.github.daengdaenglee.mangurl.application.url.inboundport.RestoreUrlService;
 import io.github.daengdaenglee.mangurl.application.url.inboundport.ShortenUrlService;
 import io.github.daengdaenglee.mangurl.config.properties.MangurlProperties;
@@ -16,14 +17,17 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 class WebController {
     private final String origin;
+    private final EncodeUrlService encodeUrlService;
     private final ShortenUrlService shortenUrlService;
     private final RestoreUrlService restoreUrlService;
 
     WebController(
             MangurlProperties mangurlProperties,
+            EncodeUrlService encodeUrlService,
             ShortenUrlService shortenUrlService,
             RestoreUrlService restoreUrlService) {
         this.origin = mangurlProperties.origin();
+        this.encodeUrlService = encodeUrlService;
         this.shortenUrlService = shortenUrlService;
         this.restoreUrlService = restoreUrlService;
     }
@@ -48,10 +52,30 @@ class WebController {
             @RequestParam(value = "resShortUrl", defaultValue = "") String resShortUrl,
             @RequestParam(value = "prevOriginalUrl", defaultValue = "") String prevOriginalUrl,
             Model model) {
-        model.addAttribute("isResult", result != null);
-        model.addAttribute("resOriginalUrl", resOriginalUrl);
-        model.addAttribute("resShortUrl", resShortUrl);
-        model.addAttribute("prevOriginalUrl", prevOriginalUrl);
+        if (result == null) {
+            model.addAttribute("isResult", false);
+            model.addAttribute("prevOriginalUrl", prevOriginalUrl);
+        } else {
+            model.addAttribute("isResult", true);
+
+            // @TODO encode 에러가 발생했을 때 에러 페이지 보여주기
+
+            model.addAttribute("resOriginalUrl", resOriginalUrl);
+            var resEncodedOriginalUrl = "";
+            try {
+                resEncodedOriginalUrl = this.encodeUrlService.encode(resOriginalUrl);
+            } catch (IllegalArgumentException ignored) {
+            }
+            model.addAttribute("resEncodedOriginalUrl", resEncodedOriginalUrl);
+
+            model.addAttribute("resShortUrl", resShortUrl);
+            var resEncodedShortUrl = "";
+            try {
+                resEncodedShortUrl = this.encodeUrlService.encode(resShortUrl);
+            } catch (IllegalArgumentException ignored) {
+            }
+            model.addAttribute("resEncodedShortUrl", resEncodedShortUrl);
+        }
         return "app";
     }
 
