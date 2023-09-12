@@ -1,6 +1,7 @@
 package io.github.daengdaenglee.mangurl.application.url.service;
 
 import io.github.daengdaenglee.mangurl.TestUrlData;
+import io.github.daengdaenglee.mangurl.application.url.inboundport.EncodeUrlService;
 import io.github.daengdaenglee.mangurl.application.url.inboundport.RestoreUrlService;
 import io.github.daengdaenglee.mangurl.application.url.outboundport.UrlRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,13 +21,15 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class RestoreUrlServiceImplTest {
     @Mock
+    private EncodeUrlService encodeUrlService;
+    @Mock
     private UrlRepository urlRepository;
     private RestoreUrlService restoreUrlService;
     private TestUrlData testUrlData;
 
     @BeforeEach
     void beforeEach() {
-        this.restoreUrlService = new RestoreUrlServiceImpl(this.urlRepository);
+        this.restoreUrlService = new RestoreUrlServiceImpl(this.encodeUrlService, this.urlRepository);
         this.testUrlData = new TestUrlData();
     }
 
@@ -36,17 +39,21 @@ class RestoreUrlServiceImplTest {
         // given
         when(this.urlRepository.findOriginalUrlByShortUrlCode(anyString()))
                 .thenReturn(Optional.of(this.testUrlData.originalUrl1));
+        var encodedOriginalUrl = "encoded:" + this.testUrlData.originalUrl1;
+        when(this.encodeUrlService.encode(anyString()))
+                .thenReturn(encodedOriginalUrl);
 
         // when
         var result = this.restoreUrlService.restoreUrl(this.testUrlData.shortUrlCode1);
 
         // then
         this.verifyUrlRepositoryFindOriginalUrlByShortUrlCode(this.testUrlData.shortUrlCode1);
+        this.verifyEncodeUrlServiceEncodeCalled(this.testUrlData.originalUrl1);
         assertThat(result.isPresent()).isTrue();
         assertThat(result.get())
                 .isEqualTo(new RestoreUrlService.RestoredUrl(
                         this.testUrlData.originalUrl1,
-                        this.testUrlData.originalUrl1));
+                        encodedOriginalUrl));
     }
 
     @Test
@@ -61,7 +68,20 @@ class RestoreUrlServiceImplTest {
 
         // then
         this.verifyUrlRepositoryFindOriginalUrlByShortUrlCode(this.testUrlData.shortUrlCode1);
+        this.verifyEncodeUrlServiceEncodeNotCalled();
         assertThat(result.isEmpty()).isTrue();
+    }
+
+    private void verifyEncodeUrlServiceEncodeCalled(String url) {
+        var urlCaptor = ArgumentCaptor.forClass(String.class);
+        verify(this.encodeUrlService, times(1))
+                .encode(urlCaptor.capture());
+        var capturedUrl = urlCaptor.getValue();
+        assertThat(capturedUrl).isEqualTo(url);
+    }
+
+    private void verifyEncodeUrlServiceEncodeNotCalled() {
+        verify(this.encodeUrlService, never()).encode(anyString());
     }
 
     private void verifyUrlRepositoryFindOriginalUrlByShortUrlCode(String shortUrlCode) {
