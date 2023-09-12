@@ -9,7 +9,7 @@ import java.net.URL;
 
 // @TODO 단위 테스트 작성
 @Service
-public class EncodeUrlServiceImpl implements EncodeUrlService {
+class EncodeUrlServiceImpl implements EncodeUrlService {
     @Override
     public boolean isValid(String url) {
         try {
