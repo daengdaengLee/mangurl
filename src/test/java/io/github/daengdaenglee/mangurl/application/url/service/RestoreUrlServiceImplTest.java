@@ -31,7 +31,7 @@ class RestoreUrlServiceImplTest {
     }
 
     @Test
-    @DisplayName("존재하는 shortUrlCode 로 조회하면 매칭되는 originalUrl 을 담은 Optional 객체를 반환한다.")
+    @DisplayName("존재하는 shortUrlCode 로 조회하면 매칭되는 originalUrl 을 담은 Optional<RestoredUrl> 객체를 반환한다.")
     void restoreExistingUrl() {
         // given
         when(this.urlRepository.findOriginalUrlByShortUrlCode(anyString()))
@@ -43,7 +43,10 @@ class RestoreUrlServiceImplTest {
         // then
         this.verifyUrlRepositoryFindOriginalUrlByShortUrlCode(this.testUrlData.shortUrlCode1);
         assertThat(result.isPresent()).isTrue();
-        assertThat(result.get()).isEqualTo(this.testUrlData.originalUrl1);
+        assertThat(result.get())
+                .isEqualTo(new RestoreUrlService.RestoredUrl(
+                        this.testUrlData.originalUrl1,
+                        this.testUrlData.originalUrl1));
     }
 
     @Test

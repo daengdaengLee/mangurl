@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.net.URL;
-
 @RequiredArgsConstructor
 @Controller
 class WebController {
@@ -21,13 +19,7 @@ class WebController {
     @RequestMapping("/{shortUrlCode}")
     String redirect(@PathVariable String shortUrlCode) {
         return this.restoreUrlService.restoreUrl(shortUrlCode)
-                .map(url -> {
-                    try {
-                        return new URL(url).toURI().toASCIIString();
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                })
+                .map(RestoreUrlService.RestoredUrl::encodedOriginalUrl)
                 .map(url -> "redirect:" + url)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
