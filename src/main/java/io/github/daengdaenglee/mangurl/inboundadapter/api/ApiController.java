@@ -11,10 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
-
 @RestController
 @RequestMapping("/api")
 class ApiController {
@@ -28,13 +24,13 @@ class ApiController {
 
     @PostMapping("/shorten")
     ShortenResponse shorten(@RequestBody ShortenRequest shortenRequest) {
-        var url = shortenRequest.data().url();
+        String shortUrlCode;
         try {
-            new URL(url).toURI();
-        } catch (URISyntaxException | MalformedURLException e) {
+            shortUrlCode = this.shortenUrlService.shortenUrl(shortenRequest.data().url());
+        } catch (ShortenUrlService.IllegalUrlException e) {
+            // @TODO RestControllerAdvice 에서 처리
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 URL 입니다.");
         }
-        var shortUrlCode = this.shortenUrlService.shortenUrl(url);
         return ShortenResponse
                 .builder()
                 .shortUrl(this.origin + shortUrlCode)

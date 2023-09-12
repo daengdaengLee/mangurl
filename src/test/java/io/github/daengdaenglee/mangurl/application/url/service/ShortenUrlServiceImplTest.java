@@ -36,6 +36,32 @@ class ShortenUrlServiceImplTest {
     }
 
     @Test
+    @DisplayName("URL 객체로 만들 수 없는 잘못된 형식의 originalUrl 을 단축하려는 경우, IllegalUrlException 을 던진다.")
+    void shortenIllegalOriginalUrl1() {
+        // given
+        var illegalUrl = "abc://illegal.com";
+
+        // when & then
+        assertThatThrownBy(() -> this.shortenUrlService.shortenUrl(illegalUrl))
+                .isInstanceOf(ShortenUrlService.IllegalUrlException.class)
+                .extracting(e -> ((ShortenUrlService.IllegalUrlException) e).getUrl())
+                .isEqualTo(illegalUrl);
+    }
+
+    @Test
+    @DisplayName("URI 객체로 만들 수 없는 잘못된 형식의 originalUrl 을 단축하려는 경우, IllegalUrlException 을 던진다.")
+    void shortenIllegalOriginalUrl2() {
+        // given
+        var illegalUrl = "https://illegal.com?q=a|b";
+
+        // when & then
+        assertThatThrownBy(() -> this.shortenUrlService.shortenUrl(illegalUrl))
+                .isInstanceOf(ShortenUrlService.IllegalUrlException.class)
+                .extracting(e -> ((ShortenUrlService.IllegalUrlException) e).getUrl())
+                .isEqualTo(illegalUrl);
+    }
+
+    @Test
     @DisplayName("저장되어 있는 originalUrl 을 단축하려는 경우, 매핑되어 있는 shortUrlCode 를 바로 반환한다.")
     void shortenExistingOriginalUrl() {
         // given
