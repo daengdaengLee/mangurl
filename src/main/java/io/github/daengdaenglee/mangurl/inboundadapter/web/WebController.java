@@ -35,7 +35,7 @@ class WebController {
     @RequestMapping("/{shortUrlCode}")
     String redirect(@PathVariable String shortUrlCode) {
         return this.restoreUrlService.restoreUrl(shortUrlCode)
-                .map(RestoreUrlService.RestoredUrl::encodedOriginalUrl)
+                .map(this.encodeUrlService::encode)
                 .map(url -> "redirect:" + url)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
