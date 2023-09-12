@@ -10,6 +10,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
+
 @RequiredArgsConstructor
 @Controller
 class WebController {
@@ -40,6 +44,12 @@ class WebController {
             @ModelAttribute ShortenUrlForm shortenUrlForm,
             RedirectAttributes redirectAttributes) {
         var originalUrl = shortenUrlForm.originalUrl();
+        // @TODO binding result 를 이용하여 오류 메세지 보여주기
+        try {
+            new URL(originalUrl).toURI();
+        } catch (URISyntaxException | MalformedURLException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 URL 입니다.");
+        }
         var shortUrlCode = this.shortenUrlService.shortenUrl(originalUrl);
         var shortUrl = "http://localhost:8080/" + shortUrlCode;
 
