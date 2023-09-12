@@ -46,7 +46,7 @@ class ShortenUrlServiceImplTest {
     void shortenIllegalOriginalUrl1() {
         // given
         var illegalUrl = "abc://illegal.com";
-        when(this.encodeUrlService.validate(illegalUrl)).thenReturn(false);
+        when(this.encodeUrlService.isValid(illegalUrl)).thenReturn(false);
 
         // when & then
         assertThatThrownBy(() -> this.shortenUrlService.shortenUrl(illegalUrl))
@@ -61,7 +61,7 @@ class ShortenUrlServiceImplTest {
     void shortenIllegalOriginalUrl2() {
         // given
         var illegalUrl = "https://illegal.com?q=a|b";
-        when(this.encodeUrlService.validate(illegalUrl)).thenReturn(false);
+        when(this.encodeUrlService.isValid(illegalUrl)).thenReturn(false);
 
         // when & then
         assertThatThrownBy(() -> this.shortenUrlService.shortenUrl(illegalUrl))
@@ -75,7 +75,7 @@ class ShortenUrlServiceImplTest {
     @DisplayName("저장되어 있는 originalUrl 을 단축하려는 경우, 매핑되어 있는 shortUrlCode 를 바로 반환한다.")
     void shortenExistingOriginalUrl() {
         // given
-        when(this.encodeUrlService.validate(this.testUrlData.originalUrl1)).thenReturn(true);
+        when(this.encodeUrlService.isValid(this.testUrlData.originalUrl1)).thenReturn(true);
         when(this.urlRepository.findShortUrlCodeByOriginalUrl(anyString()))
                 .thenReturn(Optional.of(this.testUrlData.shortUrlCode1));
 
@@ -92,7 +92,7 @@ class ShortenUrlServiceImplTest {
     @DisplayName("재시도 도중 originalUrl 에 매핑된 shortUrlCode 를 찾은 경우, 매핑되어 있는 shortUrlCode 를 바로 반환한다.")
     void shortenExistingOriginalUrl2() {
         // given
-        when(this.encodeUrlService.validate(this.testUrlData.originalUrl1)).thenReturn(true);
+        when(this.encodeUrlService.isValid(this.testUrlData.originalUrl1)).thenReturn(true);
         when(this.mangleService.mangle(anyString()))
                 .thenReturn(this.testUrlData.shortUrlCode2);
         when(this.urlRepository.findShortUrlCodeByOriginalUrl(anyString()))
@@ -119,7 +119,7 @@ class ShortenUrlServiceImplTest {
             해당 shortUrlCode 를 반환한다.""")
     void shortenNotExistingOriginalUrl() {
         // given
-        when(this.encodeUrlService.validate(this.testUrlData.originalUrl1)).thenReturn(true);
+        when(this.encodeUrlService.isValid(this.testUrlData.originalUrl1)).thenReturn(true);
         when(this.mangleService.mangle(anyString()))
                 .thenReturn(this.testUrlData.shortUrlCode1);
         when(this.urlRepository.findShortUrlCodeByOriginalUrl(anyString()))
@@ -147,7 +147,7 @@ class ShortenUrlServiceImplTest {
             해당 shortUrlCode 를 반환한다.""")
     void shortenNotExistingOriginalUrl2() {
         // given
-        when(this.encodeUrlService.validate(this.testUrlData.originalUrl1)).thenReturn(true);
+        when(this.encodeUrlService.isValid(this.testUrlData.originalUrl1)).thenReturn(true);
         when(this.mangleService.mangle(anyString()))
                 .thenReturn(this.testUrlData.shortUrlCode1)
                 .thenReturn(this.testUrlData.shortUrlCode2);
@@ -181,7 +181,7 @@ class ShortenUrlServiceImplTest {
             RuntimeException 을 발생시킨다.""")
     void shortenNotExistingOriginalUrl3() {
         // given
-        when(this.encodeUrlService.validate(this.testUrlData.originalUrl1)).thenReturn(true);
+        when(this.encodeUrlService.isValid(this.testUrlData.originalUrl1)).thenReturn(true);
         when(this.mangleService.mangle(anyString()))
                 .thenReturn(this.testUrlData.shortUrlCode1)
                 .thenReturn(this.testUrlData.shortUrlCode2)
@@ -209,7 +209,7 @@ class ShortenUrlServiceImplTest {
     private void verifyEncodeUrlServiceValidate(String url) {
         var urlCaptor = ArgumentCaptor.forClass(String.class);
         verify(this.encodeUrlService, times(1))
-                .validate(urlCaptor.capture());
+                .isValid(urlCaptor.capture());
         var capturedUrl = urlCaptor.getValue();
         assertThat(capturedUrl).isEqualTo(url);
     }

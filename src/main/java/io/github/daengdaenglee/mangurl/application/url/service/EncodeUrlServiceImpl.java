@@ -11,7 +11,7 @@ import java.net.URL;
 @Service
 public class EncodeUrlServiceImpl implements EncodeUrlService {
     @Override
-    public boolean validate(String url) {
+    public boolean isValid(String url) {
         try {
             new URL(url).toURI();
             return true;

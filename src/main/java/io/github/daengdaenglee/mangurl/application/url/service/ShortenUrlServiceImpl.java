@@ -47,7 +47,7 @@ class ShortenUrlServiceImpl implements ShortenUrlService {
      * @throws IllegalUrlException 잘못된 url 인 경우
      */
     private void validateUrl(String url) {
-        if (this.encodeUrlService.validate(url)) {
+        if (this.encodeUrlService.isValid(url)) {
             return;
         }
         throw new IllegalUrlException(url);
