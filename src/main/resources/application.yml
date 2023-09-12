@@ -9,6 +9,8 @@ spring:
         - "mangurl-local-container"
       test:
         - "mangurl-test"
+      dev:
+        - "mangurl-dev"
 ---
 spring:
   config:
@@ -30,3 +32,10 @@ spring:
       on-profile: "mangurl-test"
     import:
       - "classpath:mangurl/test.yml"
+---
+spring:
+  config:
+    activate:
+      on-profile: "mangurl-dev"
+    import:
+      - "classpath:mangurl/dev.yml"
