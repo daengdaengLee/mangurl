@@ -73,6 +73,10 @@ jobs:
         with:
           mask-password: true
 
+      - name: Delete config files
+        run: |
+          rm -rf ./src/main/resources/mangurl/*.yml
+
       - name: Build, tag, and push image to amazon ecr
         id: build-image
         env:
