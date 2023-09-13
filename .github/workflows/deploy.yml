@@ -48,7 +48,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up jdk 17
         uses: actions/setup-java@v3
@@ -61,7 +61,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
 
       - name: Configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -70,12 +70,13 @@ jobs:
       - name: Login to amazon ecr
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
+        with:
+          mask-password: true
 
       - name: Build, tag, and push image to amazon ecr
         id: build-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          #IMAGE_TAG: ${{ steps.get-project-version.outputs.version }}
         run: |
           IMAGE_TAG=$(./gradlew -q printVersion)
           ./gradlew bootBuildImage -Ptag=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
