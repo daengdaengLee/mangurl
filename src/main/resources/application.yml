@@ -11,6 +11,8 @@ spring:
         - "mangurl-test"
       dev:
         - "mangurl-dev"
+      prod:
+        - "mangurl-prod"
 ---
 spring:
   config:
@@ -39,3 +41,10 @@ spring:
       on-profile: "mangurl-dev"
     import:
       - "classpath:mangurl/dev.yml"
+---
+spring:
+  config:
+    activate:
+      on-profile: "mangurl-prod"
+    import:
+      - "classpath:mangurl/prod.yml"
