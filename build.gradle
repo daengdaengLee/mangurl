@@ -43,3 +43,9 @@ bootBuildImage {
         tags.add("${project.getProperties()['tag']}")
     }
 }
+
+tasks.register('printVersion') {
+    doLast {
+        println(project.version)
+    }
+}
