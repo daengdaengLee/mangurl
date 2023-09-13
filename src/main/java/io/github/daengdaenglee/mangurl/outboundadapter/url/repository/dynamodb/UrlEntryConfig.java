@@ -14,9 +14,8 @@ class UrlEntryConfig {
     UrlEntry.DynamoDb urlEntryDynamoDb(
             MangurlProperties mangurlProperties,
             DynamoDbEnhancedClient client) {
-        var table = client.table(
-                mangurlProperties.repository().tableNamePrefix().orElse("") + UrlEntry.TABLE_NAME,
-                TableSchema.fromBean(UrlEntry.class));
+        var tableName = mangurlProperties.getRepository().getTableNamePrefix() + UrlEntry.TABLE_NAME;
+        var table = client.table(tableName, TableSchema.fromBean(UrlEntry.class));
         return new UrlEntry.DynamoDb(table, table.index(UrlEntry.ORIGINAL_URL_INDEX_NAME));
     }
 }

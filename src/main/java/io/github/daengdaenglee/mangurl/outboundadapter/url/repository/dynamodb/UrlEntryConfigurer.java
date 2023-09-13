@@ -27,7 +27,7 @@ class UrlEntryConfigurer {
 
     @PostConstruct
     void postConstruct() {
-        var ddlAuto = this.mangurlProperties.repository().ddlAuto();
+        var ddlAuto = this.mangurlProperties.getRepository().getDdlAuto();
         if (ddlAuto.contains(DdlAuto.DROP)) {
             this.drop();
         }

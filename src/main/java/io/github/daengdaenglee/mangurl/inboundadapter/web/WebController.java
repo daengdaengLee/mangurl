@@ -26,7 +26,7 @@ class WebController {
             EncodeUrlService encodeUrlService,
             ShortenUrlService shortenUrlService,
             RestoreUrlService restoreUrlService) {
-        this.origin = mangurlProperties.origin();
+        this.origin = mangurlProperties.getOrigin();
         this.encodeUrlService = encodeUrlService;
         this.shortenUrlService = shortenUrlService;
         this.restoreUrlService = restoreUrlService;

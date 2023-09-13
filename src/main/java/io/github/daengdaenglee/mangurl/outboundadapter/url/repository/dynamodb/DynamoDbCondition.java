@@ -14,7 +14,7 @@ class DynamoDbCondition implements ConfigurationCondition {
             return false;
         }
         var mangurlProperties = beanFactory.getBean(MangurlProperties.class);
-        return mangurlProperties.repository().type() == Type.DYNAMODB;
+        return mangurlProperties.getRepository().getType() == Type.DYNAMODB;
     }
 
     @Override
