@@ -37,5 +37,15 @@ tasks.named('test') {
 }
 
 bootBuildImage {
-    tags = ["${project.name}:${project.version}", "${project.name}:latest"]
+    tags.add("${project.name}:latest")
+
+    if (project.hasProperty('tag')) {
+        tags.add("${project.getProperties()['tag']}")
+    }
+}
+
+tasks.register('printVersion') {
+    doLast {
+        println(project.version)
+    }
 }
