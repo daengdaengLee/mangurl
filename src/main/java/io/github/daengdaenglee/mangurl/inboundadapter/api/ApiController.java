@@ -18,7 +18,7 @@ class ApiController {
     private final ShortenUrlService shortenUrlService;
 
     ApiController(MangurlProperties mangurlProperties, ShortenUrlService shortenUrlService) {
-        this.origin = mangurlProperties.origin();
+        this.origin = mangurlProperties.getOrigin();
         this.shortenUrlService = shortenUrlService;
     }
 

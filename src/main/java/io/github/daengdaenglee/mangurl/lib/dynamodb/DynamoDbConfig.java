@@ -10,7 +10,6 @@ import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 
 @Slf4j
 @Configuration
@@ -19,22 +18,20 @@ class DynamoDbConfig {
     DynamoDbClient dynamoDbClient(MangurlProperties mangurlProperties) {
         var builder = DynamoDbClient.builder();
 
-        mangurlProperties.aws()
-                .flatMap(MangurlProperties.AwsProperties::credentials)
+        builder.region(mangurlProperties.getAws().getRegion());
+
+        mangurlProperties.getAws()
+                .getCredentials()
                 .map(credentials -> AwsBasicCredentials.create(
-                        credentials.accessKeyId(),
-                        credentials.secretAccessKey()))
+                        credentials.getAccessKeyId(),
+                        credentials.getSecretAccessKey()))
                 .map(StaticCredentialsProvider::create)
                 .ifPresent(builder::credentialsProvider);
 
-        mangurlProperties.aws()
-                .map(MangurlProperties.AwsProperties::region)
-                .ifPresent(builder::region);
-
-        mangurlProperties.aws()
-                .flatMap(MangurlProperties.AwsProperties::dynamoDb)
-                .flatMap(MangurlProperties.AwsProperties.DynamoDbProperties::endpoint)
-                .map(this::createUri)
+        mangurlProperties.getAws()
+                .getDynamoDb()
+                .flatMap(MangurlProperties.AwsProperties.DynamoDbProperties::getEndpoint)
+                .map(URI::create)
                 .ifPresent(builder::endpointOverride);
 
         return builder.build();
@@ -45,13 +42,5 @@ class DynamoDbConfig {
         return DynamoDbEnhancedClient.builder()
                 .dynamoDbClient(client)
                 .build();
-    }
-
-    private URI createUri(String value) {
-        try {
-            return new URI(value);
-        } catch (URISyntaxException e) {
-            throw new IllegalArgumentException(e);
-        }
     }
 }

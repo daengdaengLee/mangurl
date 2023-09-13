@@ -14,7 +14,7 @@ class InMemoryCondition implements ConfigurationCondition {
             return false;
         }
         var mangurlProperties = beanFactory.getBean(MangurlProperties.class);
-        return mangurlProperties.repository().type() == Type.IN_MEMORY;
+        return mangurlProperties.getRepository().getType() == Type.IN_MEMORY;
     }
 
     @Override
