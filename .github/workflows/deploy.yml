@@ -75,12 +75,10 @@ jobs:
         id: build-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          # 태그 설정
-          IMAGE_TAG: ${{ github.sha }}
+          #IMAGE_TAG: ${{ steps.get-project-version.outputs.version }}
         run: |
-          # gradle 이용하여 docker image 빌드
-          # docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker tag <gradle 에서 빌드한 docker image & tag> $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          IMAGE_TAG=$(./gradlew -q printVersion)
+          ./gradlew bootBuildImage -Ptag=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
