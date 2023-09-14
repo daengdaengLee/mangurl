@@ -25,7 +25,7 @@ class RootController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    @RequestMapping
+    @RequestMapping({"", "/"})
     String home() {
         return "redirect:/app";
     }
