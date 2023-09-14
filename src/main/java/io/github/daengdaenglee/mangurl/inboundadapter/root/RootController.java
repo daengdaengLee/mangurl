@@ -13,7 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 @Slf4j
 @RequiredArgsConstructor
 @Controller
-public class RootController {
+class RootController {
     private final RestoreUrlService restoreUrlService;
     private final EncodeUrlService encodeUrlService;
 
