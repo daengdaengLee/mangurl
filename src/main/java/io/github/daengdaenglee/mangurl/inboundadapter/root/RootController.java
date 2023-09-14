@@ -17,7 +17,7 @@ class RootController {
     private final RestoreUrlService restoreUrlService;
     private final EncodeUrlService encodeUrlService;
 
-    @RequestMapping("/{shortUrlCode}")
+    @RequestMapping({"/{shortUrlCode}", "/{shortUrlCode}/"})
     String redirect(@PathVariable String shortUrlCode) {
         return this.restoreUrlService.restoreUrl(shortUrlCode)
                 .map(this.encodeUrlService::encode)
