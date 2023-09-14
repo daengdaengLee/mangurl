@@ -1,10 +1,9 @@
-package io.github.daengdaenglee.mangurl.inboundadapter.web;
+package io.github.daengdaenglee.mangurl.inboundadapter.app;
 
 import io.github.daengdaenglee.mangurl.application.url.inboundport.EncodeUrlService;
-import io.github.daengdaenglee.mangurl.application.url.inboundport.RestoreUrlService;
 import io.github.daengdaenglee.mangurl.application.url.inboundport.ShortenUrlService;
 import io.github.daengdaenglee.mangurl.config.properties.MangurlProperties;
-import io.github.daengdaenglee.mangurl.inboundadapter.web.form.ShortenUrlForm;
+import io.github.daengdaenglee.mangurl.inboundadapter.app.form.ShortenUrlForm;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -15,37 +14,22 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Slf4j
 @Controller
-class WebController {
+@RequestMapping("/app")
+class AppController {
     private final String origin;
     private final EncodeUrlService encodeUrlService;
     private final ShortenUrlService shortenUrlService;
-    private final RestoreUrlService restoreUrlService;
 
-    WebController(
+    AppController(
             MangurlProperties mangurlProperties,
             EncodeUrlService encodeUrlService,
-            ShortenUrlService shortenUrlService,
-            RestoreUrlService restoreUrlService) {
+            ShortenUrlService shortenUrlService) {
         this.origin = mangurlProperties.getOrigin();
         this.encodeUrlService = encodeUrlService;
         this.shortenUrlService = shortenUrlService;
-        this.restoreUrlService = restoreUrlService;
     }
 
-    @RequestMapping("/{shortUrlCode}")
-    String redirect(@PathVariable String shortUrlCode) {
-        return this.restoreUrlService.restoreUrl(shortUrlCode)
-                .map(this.encodeUrlService::encode)
-                .map(url -> "redirect:" + url)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-    }
-
-    @RequestMapping
-    String home() {
-        return "redirect:/app";
-    }
-
-    @GetMapping("/app")
+    @GetMapping
     String app(
             @RequestParam(value = "result", required = false) String result,
             @RequestParam(value = "resOriginalUrl", defaultValue = "") String resOriginalUrl,
@@ -79,7 +63,7 @@ class WebController {
         return "app";
     }
 
-    @PostMapping("/app")
+    @PostMapping
     String shorten(
             @ModelAttribute ShortenUrlForm shortenUrlForm,
             RedirectAttributes redirectAttributes) {

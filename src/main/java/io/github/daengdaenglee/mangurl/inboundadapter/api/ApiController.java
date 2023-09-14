@@ -22,6 +22,10 @@ class ApiController {
         this.shortenUrlService = shortenUrlService;
     }
 
+    @RequestMapping("/health")
+    void health() {
+    }
+
     @PostMapping("/shorten")
     ShortenResponse shorten(@RequestBody ShortenRequest shortenRequest) {
         String shortUrlCode;
