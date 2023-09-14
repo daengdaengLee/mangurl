@@ -1,7 +1,6 @@
 package io.github.daengdaenglee.mangurl.inboundadapter.web;
 
 import io.github.daengdaenglee.mangurl.application.url.inboundport.EncodeUrlService;
-import io.github.daengdaenglee.mangurl.application.url.inboundport.RestoreUrlService;
 import io.github.daengdaenglee.mangurl.application.url.inboundport.ShortenUrlService;
 import io.github.daengdaenglee.mangurl.config.properties.MangurlProperties;
 import io.github.daengdaenglee.mangurl.inboundadapter.web.form.ShortenUrlForm;
@@ -19,25 +18,14 @@ class WebController {
     private final String origin;
     private final EncodeUrlService encodeUrlService;
     private final ShortenUrlService shortenUrlService;
-    private final RestoreUrlService restoreUrlService;
 
     WebController(
             MangurlProperties mangurlProperties,
             EncodeUrlService encodeUrlService,
-            ShortenUrlService shortenUrlService,
-            RestoreUrlService restoreUrlService) {
+            ShortenUrlService shortenUrlService) {
         this.origin = mangurlProperties.getOrigin();
         this.encodeUrlService = encodeUrlService;
         this.shortenUrlService = shortenUrlService;
-        this.restoreUrlService = restoreUrlService;
-    }
-
-    @RequestMapping("/{shortUrlCode}")
-    String redirect(@PathVariable String shortUrlCode) {
-        return this.restoreUrlService.restoreUrl(shortUrlCode)
-                .map(this.encodeUrlService::encode)
-                .map(url -> "redirect:" + url)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @RequestMapping
