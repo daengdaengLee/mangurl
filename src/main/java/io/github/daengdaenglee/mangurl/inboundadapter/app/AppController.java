@@ -12,11 +12,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.net.URI;
+
 @Slf4j
 @Controller
-@RequestMapping(AppController.baseUrl)
+@RequestMapping(AppController.basePath)
 class AppController {
-    static final String baseUrl = "/app";
+    static final String basePath = "/app";
 
     private final String origin;
     private final EncodeUrlService encodeUrlService;
@@ -33,7 +35,7 @@ class AppController {
 
     @GetMapping("/")
     String appSlash() {
-        return "redirect:" + AppController.baseUrl;
+        return "redirect:" + this.createFullUrl(AppController.basePath);
     }
 
     @GetMapping
@@ -82,11 +84,15 @@ class AppController {
             // @TODO binding result 를 이용하여 오류 메세지 보여주기
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 URL 입니다.");
         }
-        var shortUrl = this.origin + shortUrlCode;
+        var shortUrl = this.createFullUrl(shortUrlCode);
 
         redirectAttributes.addAttribute("result", "");
         redirectAttributes.addAttribute("resOriginalUrl", originalUrl);
         redirectAttributes.addAttribute("resShortUrl", shortUrl);
-        return "redirect:/app";
+        return "redirect:" + this.createFullUrl(AppController.basePath);
+    }
+
+    private String createFullUrl(String path) {
+        return URI.create(this.origin).resolve(path).toASCIIString();
     }
 }
