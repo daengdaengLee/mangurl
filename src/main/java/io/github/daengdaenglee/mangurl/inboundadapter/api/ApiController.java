@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.net.URI;
+
 @RestController
 @RequestMapping("/api")
 class ApiController {
@@ -35,9 +37,10 @@ class ApiController {
             // @TODO RestControllerAdvice 에서 처리
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 URL 입니다.");
         }
+        var shortUrl = URI.create(this.origin).resolve(shortUrlCode).toASCIIString();
         return ShortenResponse
                 .builder()
-                .shortUrl(this.origin + shortUrlCode)
+                .shortUrl(shortUrl)
                 .build();
     }
 }

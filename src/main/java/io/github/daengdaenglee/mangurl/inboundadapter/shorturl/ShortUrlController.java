@@ -1,4 +1,4 @@
-package io.github.daengdaenglee.mangurl.inboundadapter.root;
+package io.github.daengdaenglee.mangurl.inboundadapter.shorturl;
 
 import io.github.daengdaenglee.mangurl.application.url.inboundport.EncodeUrlService;
 import io.github.daengdaenglee.mangurl.application.url.inboundport.RestoreUrlService;
@@ -13,20 +13,15 @@ import org.springframework.web.server.ResponseStatusException;
 @Slf4j
 @RequiredArgsConstructor
 @Controller
-class RootController {
+class ShortUrlController {
     private final RestoreUrlService restoreUrlService;
     private final EncodeUrlService encodeUrlService;
 
-    @RequestMapping("/{shortUrlCode}")
+    @RequestMapping({"/{shortUrlCode}", "/{shortUrlCode}/"})
     String redirect(@PathVariable String shortUrlCode) {
         return this.restoreUrlService.restoreUrl(shortUrlCode)
                 .map(this.encodeUrlService::encode)
                 .map(url -> "redirect:" + url)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-    }
-
-    @RequestMapping
-    String home() {
-        return "redirect:/app";
     }
 }
