@@ -14,8 +14,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Slf4j
 @Controller
-@RequestMapping("/app")
+@RequestMapping(AppController.baseUrl)
 class AppController {
+    static final String baseUrl = "/app";
+
     private final String origin;
     private final EncodeUrlService encodeUrlService;
     private final ShortenUrlService shortenUrlService;
@@ -27,6 +29,11 @@ class AppController {
         this.origin = mangurlProperties.getOrigin();
         this.encodeUrlService = encodeUrlService;
         this.shortenUrlService = shortenUrlService;
+    }
+
+    @GetMapping("/")
+    String appSlash() {
+        return "redirect:" + AppController.baseUrl;
     }
 
     @GetMapping
