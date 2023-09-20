@@ -4,7 +4,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.ConfigurationPropertiesBinding;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.boot.context.properties.bind.ConstructorBinding;
 import org.springframework.validation.annotation.Validated;
@@ -17,7 +16,6 @@ import java.util.Set;
 // 자동으로 자식 객체까지 검사
 @Validated
 @ConfigurationProperties(prefix = "mangurl", ignoreInvalidFields = true)
-@ConfigurationPropertiesBinding
 public class MangurlProperties {
     @NotNull(message = "mangurl.origin 설정이 없습니다.")
     private final String origin;
@@ -36,7 +34,6 @@ public class MangurlProperties {
     }
 
     @Getter
-    @ConfigurationPropertiesBinding
     public static class RepositoryProperties {
         @NotNull(message = "mangurl.repository.type 설정이 없습니다.")
         private final Type type;
@@ -64,7 +61,6 @@ public class MangurlProperties {
         }
     }
 
-    @ConfigurationPropertiesBinding
     public static class AwsProperties {
         @Getter
         @NotNull
@@ -107,7 +103,6 @@ public class MangurlProperties {
 
         @RequiredArgsConstructor(onConstructor = @__(@ConstructorBinding))
         @Getter
-        @ConfigurationPropertiesBinding
         public static class CredentialsProperties {
             @NotNull
             private final String accessKeyId;
@@ -116,7 +111,6 @@ public class MangurlProperties {
         }
 
         @RequiredArgsConstructor(onConstructor = @__(@ConstructorBinding))
-        @ConfigurationPropertiesBinding
         public static class DynamoDbProperties {
             private final String endpoint;
 
