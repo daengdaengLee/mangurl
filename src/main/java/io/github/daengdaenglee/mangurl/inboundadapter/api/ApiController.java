@@ -4,6 +4,7 @@ import io.github.daengdaenglee.mangurl.application.url.inboundport.ShortenUrlSer
 import io.github.daengdaenglee.mangurl.config.properties.MangurlProperties;
 import io.github.daengdaenglee.mangurl.inboundadapter.api.request.ShortenRequest;
 import io.github.daengdaenglee.mangurl.inboundadapter.api.response.ShortenResponse;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,6 +25,7 @@ class ApiController {
         this.shortenUrlService = shortenUrlService;
     }
 
+    @Hidden
     @RequestMapping("/health")
     void health() {
     }
