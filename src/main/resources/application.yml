@@ -38,14 +38,14 @@ spring:
     activate:
       on-profile: "mangurl-test"
     import:
-      - "optional:classpath:mangurl/test.yml"
+      - "classpath:mangurl/test.yml"
 ---
 spring:
   config:
     activate:
       on-profile: "mangurl-dev"
     import:
-      - "classpath:mangurl/dev.yml"
+      - "optional:classpath:mangurl/dev.yml"
 ---
 spring:
   config:
