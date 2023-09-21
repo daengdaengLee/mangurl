@@ -5,10 +5,6 @@
 - URL 단축 서비스입니다.
 - [여기](https://mangurl.net)에서 사용할 수 있습니다.
 
-<!--
-- 발음: mangle (맹글) + url (유알엘) -> mangurl(맹-굴)
--->
-
 ## 프로젝트 구조
 
 ```text
@@ -161,10 +157,30 @@ Spring Profile 설정
 - 통합 테스트 Task는 verify에 포함될 예정입니다.
 - 릴리즈 과정에서 실행할 예정입니다.
 
-<!--
 ## 배포
-GitHub Action 사용해서 배포
--->
+
+DEPLOY GitHub Action으로 배포할 수 있습니다. Action 실행 권한이 필요한 경우 담당자에게 문의하세요.
+
+AWS ECR에 푸시할 수 있는 AWS IAM Credentials가 있다면 로컬에서 도커 이미지를 빌드해서 직접 푸시할 수 있습니다. 도커와 AWS CLI 가 필요합니다.
+
+- `src/main/resources/mangurl/` 아래의 모든 설정 파일을 삭제해주세요.
+  공통 설정인 `application.yml`을 제외하고 도커 이미지에 직접 설정 파일이 포함되지 않게 주의해주세요.
+- AWS CLI를 사용해 AWS ECR에 대해 도커 클라이언트를 인증합니다.
+  ```shell
+  aws ecr get-login-password --region <region> --profile <profile> | docker login --username AWS --password-stdin <ecr 주소>
+  ```
+- 도커 이미지를 빌드합니다. AWS ECR에 맞는 태그를 추가로 설정합니다.
+  ```shell
+  ./gradlew bootBuildImage -Ptag=<ecr 주소/ecr 리포지토리 이름:프로젝트 버전>
+  ```
+  현재 프로젝트 버전은 아래 명령어로 출력할 수 있습니다.
+  ```shell
+  ./gradlew -q printVersion
+  ```
+- 빌드한 도커 이미지를 AWS ECR에 푸시합니다.
+  ```shell
+  docker push <빌드한 도커 이미지 이름:버전>
+  ```
 
 ## API 엔드포인트 목록 및 사용
 
