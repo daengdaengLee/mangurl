@@ -1,6 +1,7 @@
 package io.github.daengdaenglee.mangurl.inboundadapter.api.request;
 
-public record ShortenRequest(Data data) {
-    public record Data(String url) {
-    }
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+
+public record ShortenRequest(@Valid @NotNull ShortenRequestData data) {
 }

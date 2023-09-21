@@ -13,6 +13,11 @@ spring:
         - "mangurl-dev"
       prod:
         - "mangurl-prod"
+springdoc:
+  api-docs:
+    path: "/api/docs"
+  swagger-ui:
+    path: "/api/docs.html"
 ---
 spring:
   config:
@@ -40,11 +45,11 @@ spring:
     activate:
       on-profile: "mangurl-dev"
     import:
-      - "classpath:mangurl/dev.yml"
+      - "optional:classpath:mangurl/dev.yml"
 ---
 spring:
   config:
     activate:
       on-profile: "mangurl-prod"
     import:
-      - "classpath:mangurl/prod.yml"
+      - "optional:classpath:mangurl/prod.yml"
