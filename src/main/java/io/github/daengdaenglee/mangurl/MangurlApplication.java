@@ -21,7 +21,6 @@ import java.nio.file.Paths;
 @OpenAPIDefinition(servers = {@Server(url = "/", description = "Default Server URL")})
 @SpringBootApplication
 public class MangurlApplication {
-
     public static void main(String[] args) {
         MangurlApplication.downloadConfig();
         SpringApplication.run(MangurlApplication.class, args);

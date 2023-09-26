@@ -1,14 +1,15 @@
 package io.github.daengdaenglee.mangurl.outboundadapter.url.repository.dynamodb;
 
+import io.github.daengdaenglee.mangurl.config.RepositoryType;
 import io.github.daengdaenglee.mangurl.config.properties.MangurlProperties;
+import io.github.daengdaenglee.mangurl.outboundadapter.url.repository.condition.ConditionalOnRepositoryType;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
 
 @Configuration
-@Conditional(DynamoDbCondition.class)
+@ConditionalOnRepositoryType(RepositoryType.DYNAMODB)
 class UrlEntryConfig {
     @Bean
     UrlEntry.DynamoDb urlEntryDynamoDb(

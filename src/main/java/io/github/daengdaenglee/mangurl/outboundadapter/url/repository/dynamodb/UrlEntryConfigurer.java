@@ -1,11 +1,12 @@
 package io.github.daengdaenglee.mangurl.outboundadapter.url.repository.dynamodb;
 
+import io.github.daengdaenglee.mangurl.config.RepositoryType;
 import io.github.daengdaenglee.mangurl.config.properties.MangurlProperties;
 import io.github.daengdaenglee.mangurl.config.properties.MangurlProperties.RepositoryProperties.DdlAuto;
+import io.github.daengdaenglee.mangurl.outboundadapter.url.repository.condition.ConditionalOnRepositoryType;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.*;
@@ -19,7 +20,7 @@ import java.util.stream.Stream;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-@Conditional(DynamoDbCondition.class)
+@ConditionalOnRepositoryType(RepositoryType.DYNAMODB)
 class UrlEntryConfigurer {
     private final MangurlProperties mangurlProperties;
     private final DynamoDbClient client;

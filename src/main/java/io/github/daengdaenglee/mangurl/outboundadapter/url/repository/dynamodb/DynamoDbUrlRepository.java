@@ -2,8 +2,9 @@ package io.github.daengdaenglee.mangurl.outboundadapter.url.repository.dynamodb;
 
 import io.github.daengdaenglee.mangurl.application.url.outboundport.DuplicateShortUrlCodeException;
 import io.github.daengdaenglee.mangurl.application.url.outboundport.UrlRepository;
+import io.github.daengdaenglee.mangurl.config.RepositoryType;
+import io.github.daengdaenglee.mangurl.outboundadapter.url.repository.condition.ConditionalOnRepositoryType;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Repository;
 import software.amazon.awssdk.enhanced.dynamodb.Expression;
 import software.amazon.awssdk.enhanced.dynamodb.Key;
@@ -16,7 +17,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Repository
-@Conditional(DynamoDbCondition.class)
+@ConditionalOnRepositoryType(RepositoryType.DYNAMODB)
 class DynamoDbUrlRepository implements UrlRepository {
     private final UrlEntry.DynamoDb urlEntryDynamoDb;
 
