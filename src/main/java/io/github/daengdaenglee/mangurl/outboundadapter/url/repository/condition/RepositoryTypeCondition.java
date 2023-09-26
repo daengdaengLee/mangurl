@@ -1,7 +1,7 @@
 package io.github.daengdaenglee.mangurl.outboundadapter.url.repository.condition;
 
 import io.github.daengdaenglee.mangurl.config.properties.MangurlProperties;
-import io.github.daengdaenglee.mangurl.config.properties.MangurlProperties.RepositoryProperties.Type;
+import io.github.daengdaenglee.mangurl.config.RepositoryType;
 import org.springframework.context.annotation.ConditionContext;
 import org.springframework.context.annotation.ConfigurationCondition;
 import org.springframework.core.type.AnnotatedTypeMetadata;
@@ -20,8 +20,8 @@ class RepositoryTypeCondition implements ConfigurationCondition {
 
         var annotation = metadata.getAnnotations().get(ConditionalOnRepositoryType.class);
         return annotation.getValue("value")
-                .flatMap(repoType -> repoType instanceof Type ?
-                        Optional.of((Type) repoType) :
+                .flatMap(repoType -> repoType instanceof RepositoryType ?
+                        Optional.of((RepositoryType) repoType) :
                         Optional.empty())
                 .map(repoType -> repoType == configRepoType)
                 .orElse(false);

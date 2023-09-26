@@ -1,5 +1,6 @@
 package io.github.daengdaenglee.mangurl.config.properties;
 
+import io.github.daengdaenglee.mangurl.config.RepositoryType;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -36,22 +37,17 @@ public class MangurlProperties {
     @Getter
     public static class RepositoryProperties {
         @NotNull(message = "mangurl.repository.type 설정이 없습니다.")
-        private final Type type;
+        private final RepositoryType type;
         @NotNull(message = "mangurl.repository.tableNamePrefix 설정이 없습니다.")
         private final String tableNamePrefix;
         @NotNull(message = "mangurl.repository.ddlAuto 설정이 없습니다.")
         private final Set<DdlAuto> ddlAuto;
 
         @ConstructorBinding
-        public RepositoryProperties(Type type, String tableNamePrefix, Set<DdlAuto> ddlAuto) {
-            this.type = type == null ? Type.IN_MEMORY : type;
+        public RepositoryProperties(RepositoryType type, String tableNamePrefix, Set<DdlAuto> ddlAuto) {
+            this.type = type == null ? RepositoryType.IN_MEMORY : type;
             this.tableNamePrefix = tableNamePrefix == null ? "" : tableNamePrefix;
             this.ddlAuto = ddlAuto == null ? Set.of() : ddlAuto;
-        }
-
-        public enum Type {
-            IN_MEMORY,
-            DYNAMODB
         }
 
         public enum DdlAuto {
