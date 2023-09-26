@@ -1,4 +1,4 @@
-package io.github.daengdaenglee.mangurl.outboundadapter.url.repository.inmemory;
+package io.github.daengdaenglee.mangurl.outboundadapter.url.repository.condition;
 
 import io.github.daengdaenglee.mangurl.config.properties.MangurlProperties;
 import io.github.daengdaenglee.mangurl.config.properties.MangurlProperties.RepositoryProperties.Type;
@@ -6,7 +6,9 @@ import org.springframework.context.annotation.ConditionContext;
 import org.springframework.context.annotation.ConfigurationCondition;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 
-class InMemoryCondition implements ConfigurationCondition {
+import java.util.Optional;
+
+class RepositoryTypeCondition implements ConfigurationCondition {
     @Override
     public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
         var beanFactory = context.getBeanFactory();
@@ -14,7 +16,15 @@ class InMemoryCondition implements ConfigurationCondition {
             return false;
         }
         var mangurlProperties = beanFactory.getBean(MangurlProperties.class);
-        return mangurlProperties.getRepository().getType() == Type.IN_MEMORY;
+        var configRepoType = mangurlProperties.getRepository().getType();
+
+        var annotation = metadata.getAnnotations().get(ConditionalOnRepositoryType.class);
+        return annotation.getValue("value")
+                .flatMap(repoType -> repoType instanceof Type ?
+                        Optional.of((Type) repoType) :
+                        Optional.empty())
+                .map(repoType -> repoType == configRepoType)
+                .orElse(false);
     }
 
     @Override
