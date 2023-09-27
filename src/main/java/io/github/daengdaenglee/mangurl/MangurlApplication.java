@@ -9,7 +9,6 @@ import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.AwsCredentials;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Utilities;
-import software.amazon.awssdk.transfer.s3.S3TransferManager;
 import software.amazon.awssdk.transfer.s3.model.DownloadFileRequest;
 import software.amazon.awssdk.transfer.s3.progress.LoggingTransferListener;
 
@@ -54,7 +53,7 @@ public class MangurlApplication {
         var key = s3Uri.key().orElseThrow(() -> new IllegalArgumentException("MANGURL_CONFIG_FILE_FROM URL 이 잘못되었습니다. key 를 알 수 없습니다."));
         var s3Config = new S3Config();
         try (var s3Client = s3Config.s3AsyncClient(region, awsCredentials);
-             var s3TransferManager = S3TransferManager.builder().s3Client(s3Client).build()) {
+             var s3TransferManager = s3Config.s3TransferManager(s3Client)) {
             var downloadFileRequest = DownloadFileRequest.builder()
                     .getObjectRequest(req -> req.bucket(bucket).key(key))
                     .destination(destinationPath)
