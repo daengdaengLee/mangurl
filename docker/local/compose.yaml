@@ -1,8 +1,0 @@
-name: "mangurl"
-services:
-  dynamodb-local:
-    command: "-jar DynamoDBLocal.jar -sharedDb -inMemory"
-    image: "amazon/dynamodb-local:latest"
-    container_name: "mangurl-dynamodb"
-    ports:
-      - "8000:8000"
